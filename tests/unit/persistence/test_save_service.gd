@@ -8,7 +8,16 @@ func test_save_round_trip_preserves_campaign_checkpoint() -> void:
 	service.configure_path(TEST_PATH)
 	service.clear()
 	var data := service.default_data(&"survivor")
-	data.active_mission = {"id": "medical_wing", "checkpoint": {"player_health": 42.0}}
+	data.active_mission = {
+		"id": "medical_wing",
+		"checkpoint": {
+			"checkpoint_id": "medical_access",
+			"player_position": [240.0, 180.0],
+			"player_health": 42.0,
+			"magazine_ammo": 6,
+			"reserve_ammo": 24,
+		},
+	}
 	assert_bool(service.save(data)).is_true()
 	var restored := service.load()
 	assert_str(restored.profile.difficulty).is_equal("survivor")
@@ -43,4 +52,48 @@ func test_corrupted_primary_recovers_previous_backup() -> void:
 	var recovered := service.load()
 	assert_str(recovered.profile.difficulty).is_equal("explorer")
 	assert_str(service.last_error).contains("recovered backup")
+	assert_str(service.last_status).is_equal("recovered_backup")
+	service.clear()
+
+
+func test_integrity_tampering_is_rejected_and_backup_is_restored() -> void:
+	var service := auto_free(SaveServiceNode.new()) as SaveServiceNode
+	service.configure_path(TEST_PATH)
+	service.clear()
+	assert_bool(service.save(service.default_data(&"explorer"))).is_true()
+	assert_bool(service.save(service.default_data(&"standard"))).is_true()
+	var file := FileAccess.open(TEST_PATH, FileAccess.READ_WRITE)
+	var document: Dictionary = JSON.parse_string(file.get_as_text())
+	document.profile.difficulty = "survivor"
+	file.seek(0)
+	file.store_string(JSON.stringify(document, "  "))
+	file.close()
+	var recovered := service.load()
+	assert_str(recovered.profile.difficulty).is_equal("explorer")
+	assert_str(service.last_status).is_equal("recovered_backup")
+	service.clear()
+
+
+func test_interrupted_temporary_save_recovers_when_primary_is_missing() -> void:
+	var service := auto_free(SaveServiceNode.new()) as SaveServiceNode
+	service.configure_path(TEST_PATH)
+	service.clear()
+	assert_bool(service.save(service.default_data(&"survivor"))).is_true()
+	assert_int(DirAccess.rename_absolute(ProjectSettings.globalize_path(TEST_PATH), ProjectSettings.globalize_path("%s.tmp" % TEST_PATH))).is_equal(OK)
+	var recovered := service.load()
+	assert_str(recovered.profile.difficulty).is_equal("survivor")
+	assert_str(service.last_status).is_equal("recovered_temporary")
+	assert_bool(FileAccess.file_exists(TEST_PATH)).is_true()
+	service.clear()
+
+
+func test_invalid_campaign_structure_fails_before_write() -> void:
+	var service := auto_free(SaveServiceNode.new()) as SaveServiceNode
+	service.configure_path(TEST_PATH)
+	service.clear()
+	var invalid := service.default_data()
+	invalid.campaign.current_mission = "not_a_mission"
+	assert_bool(service.save(invalid)).is_false()
+	assert_str(service.last_error).contains("current campaign mission")
+	assert_bool(FileAccess.file_exists(TEST_PATH)).is_false()
 	service.clear()

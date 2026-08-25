@@ -242,14 +242,22 @@ func _connect_systems() -> void:
 	mission.objective_completed.connect(func(_id: StringName, title: String) -> void: mission_hud.notify("OBJECTIVE COMPLETE  •  %s" % title.to_upper()))
 	mission.mission_completed.connect(_on_mission_completed)
 	combat_hud.bind_player(player)
+	mission_hud.bind_mission(mission)
 	mobile_controls.bind_player(player)
 	$DevelopmentDebugOverlay.bind(player, mission, power_grid, checkpoint_manager)
 	combat_hud.resume_requested.connect(func() -> void: _set_paused(false))
 	combat_hud.restart_requested.connect(_restart_checkpoint)
+	combat_hud.restart_mission_requested.connect(_restart_mission)
 	combat_hud.quit_requested.connect(_return_to_menu)
 	mission_hud.replay_requested.connect(_continue_campaign)
 	mission_hud.quit_requested.connect(_return_to_menu)
 	mobile_controls.pause_requested.connect(func() -> void: _set_paused(not get_tree().paused))
+	var platform := get_node_or_null("/root/PlatformService") as PlatformServiceNode
+	if platform != null:
+		platform.pause_requested.connect(func(reason: String) -> void: _set_paused(true, reason))
+	var saves := get_node_or_null("/root/SaveService") as SaveServiceNode
+	if saves != null:
+		saves.save_failed.connect(func(_message: String) -> void: mission_hud.notify("SAVE FAILED — PROGRESS NOT WRITTEN", 5.0))
 	var objective := mission.get_active_objective()
 	if objective != null:
 		mission_hud.set_objective(objective.title, objective.details, 1, mission.objectives.size())
@@ -303,6 +311,7 @@ func _save_checkpoint(id: StringName) -> void:
 
 
 func _restore_checkpoint(state: CheckpointState) -> void:
+	state.sanitize(player.global_position, player.health_component.maximum_health)
 	checkpoint_manager.save(state)
 	player.global_position = state.player_position
 	player.restore_health()
@@ -323,6 +332,7 @@ func _restore_checkpoint(state: CheckpointState) -> void:
 		spitter_encounter.start()
 	elif mission.active_index >= 2:
 		hunter_encounter.start()
+	_grant_checkpoint_grace()
 
 
 func _on_mission_completed() -> void:
@@ -341,15 +351,31 @@ func _on_player_died() -> void:
 	combat_hud.show_death()
 
 
-func _set_paused(enabled: bool) -> void:
+func _set_paused(enabled: bool, reason := "PAUSED") -> void:
 	get_tree().paused = enabled
-	combat_hud.show_pause(enabled)
+	combat_hud.show_pause(enabled, reason, mission_hud.objective_summary())
 
 
 func _restart_checkpoint() -> void:
 	get_tree().paused = false
 	if checkpoint_manager.prepare_restart():
 		get_tree().reload_current_scene()
+
+
+func _restart_mission() -> void:
+	get_tree().paused = false
+	CheckpointManager.clear_pending()
+	if _session() != null:
+		_session().clear_checkpoint(&"medical_wing")
+	get_tree().reload_current_scene()
+
+
+func _grant_checkpoint_grace() -> void:
+	player.set_invulnerable(true)
+	get_tree().create_timer(1.0).timeout.connect(func() -> void:
+		if is_instance_valid(player) and not player.health_component.is_dead:
+			player.set_invulnerable(false)
+	, CONNECT_ONE_SHOT)
 
 
 func _return_to_menu() -> void:

@@ -152,9 +152,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -130.0
-offset_top = -110.0
+offset_top = -165.0
 offset_right = 130.0
-offset_bottom = 110.0
+offset_bottom = 165.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -163,11 +163,20 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Title" type="Label" parent="PauseOverlay/Panel/VBox"]
+[node name="PauseTitle" type="Label" parent="PauseOverlay/Panel/VBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 26
 text = "PAUSED"
 horizontal_alignment = 1
+
+[node name="PauseContext" type="Label" parent="PauseOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Current objective"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="ResumeButton" type="Button" parent="PauseOverlay/Panel/VBox"]
 unique_name_in_owner = true
@@ -179,10 +188,22 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Restart Sandbox"
 
+[node name="PauseRestartMissionButton" type="Button" parent="PauseOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restart Mission"
+
 [node name="QuitButton" type="Button" parent="PauseOverlay/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Quit to Bootstrap"
+
+[node name="BuildLabel" type="Label" parent="PauseOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "0.8.0 Beta"
+horizontal_alignment = 1
 
 [node name="DeathOverlay" type="ColorRect" parent="."]
 unique_name_in_owner = true
@@ -203,9 +224,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = -82.0
+offset_top = -130.0
 offset_right = 150.0
-offset_bottom = 82.0
+offset_bottom = 130.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -230,3 +251,23 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 text = "Restart Combat Sandbox"
+
+[node name="DeathRestartMissionButton" type="Button" parent="DeathOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restart Mission"
+
+[node name="DeathQuitButton" type="Button" parent="DeathOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit to Main Menu"
+
+[node name="RestartMissionConfirmation" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Restart Mission"
+dialog_text = "Restart this mission from the beginning? Checkpoint progress will be cleared."
+
+[node name="QuitConfirmation" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Quit Mission"
+dialog_text = "Quit to the main menu? Progress since the last checkpoint will be lost."

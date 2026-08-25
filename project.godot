@@ -6,7 +6,7 @@ config_version=5
 [application]
 
 config/name="Hull Breach"
-config/version="0.5.0"
+config/version="0.8.0"
 run/main_scene="res://ui/menus/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
@@ -16,6 +16,7 @@ SaveService="*res://features/persistence/save_service.gd"
 SettingsService="*res://features/settings/settings_service.gd"
 GameSession="*res://features/session/game_session.gd"
 MusicDirector="*res://features/audio/music_director.gd"
+PlatformService="*res://core/platform/platform_service.gd"
 
 [display]
 

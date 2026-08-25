@@ -3,6 +3,7 @@ extends Control
 
 
 func _ready() -> void:
+	%VersionLabel.text = "HULL BREACH  %s" % GameVersion.display_string().to_upper()
 	%MainMenuButton.pressed.connect(_return_to_menu)
 	%MainMenuButton.grab_focus()
 

@@ -18,11 +18,20 @@ func _run() -> void:
 		root.add_child(scene)
 		current_scene = scene
 		await process_frame
-		var started := Time.get_ticks_usec()
+		var frame_times: Array[float] = []
 		for _frame in PROFILE_FRAMES:
+			var frame_started := Time.get_ticks_usec()
 			await process_frame
-		var average_ms := (float(Time.get_ticks_usec() - started) / 1000.0) / PROFILE_FRAMES
-		print("Campaign profile: %s %.3f ms average" % [mission_id, average_ms])
+			frame_times.append(float(Time.get_ticks_usec() - frame_started) / 1000.0)
+		frame_times.sort()
+		var total := 0.0
+		for frame_time in frame_times:
+			total += frame_time
+		var average_ms := total / frame_times.size()
+		var p95 := frame_times[clampi(int(ceil(frame_times.size() * 0.95)) - 1, 0, frame_times.size() - 1)]
+		var p99 := frame_times[clampi(int(ceil(frame_times.size() * 0.99)) - 1, 0, frame_times.size() - 1)]
+		var memory_mb := Performance.get_monitor(Performance.MEMORY_STATIC) / (1024.0 * 1024.0)
+		print("Campaign profile: %s avg %.3f ms  p95 %.3f ms  p99 %.3f ms  memory %.1f MiB" % [mission_id, average_ms, p95, p99, memory_mb])
 		if average_ms > worst_average:
 			worst_average = average_ms
 			worst_mission = mission_id

@@ -8,6 +8,8 @@ var sfx_volume := 0.85
 var ui_volume := 0.9
 var vsync_enabled := true
 var target_fps := 60
+var fullscreen_enabled := false
+var effects_quality := 1
 var mouse_sensitivity := 1.0
 var controller_sensitivity := 1.0
 var controller_deadzone := 0.2
@@ -18,6 +20,8 @@ var screen_shake_intensity := 1.0
 var flash_intensity := 1.0
 var aim_assist_strength := 0.0
 var ui_scale := 1.0
+var vibration_intensity := 1.0
+var subtitles_enabled := true
 
 
 func to_dictionary() -> Dictionary:
@@ -29,7 +33,12 @@ func to_dictionary() -> Dictionary:
 			"sfx": sfx_volume,
 			"ui": ui_volume,
 		},
-		"video": {"vsync": vsync_enabled, "target_fps": target_fps},
+		"video": {
+			"vsync": vsync_enabled,
+			"target_fps": target_fps,
+			"fullscreen": fullscreen_enabled,
+			"effects_quality": effects_quality,
+		},
 		"controls": {
 			"mouse_sensitivity": mouse_sensitivity,
 			"controller_sensitivity": controller_sensitivity,
@@ -43,6 +52,8 @@ func to_dictionary() -> Dictionary:
 			"flash_intensity": flash_intensity,
 			"aim_assist": aim_assist_strength,
 			"ui_scale": ui_scale,
+			"vibration_intensity": vibration_intensity,
+			"subtitles": subtitles_enabled,
 		},
 	}
 
@@ -58,6 +69,8 @@ static func from_dictionary(data: Dictionary) -> GameSettings:
 	var video: Dictionary = data.get("video", {})
 	settings.vsync_enabled = bool(video.get("vsync", settings.vsync_enabled))
 	settings.target_fps = clampi(int(video.get("target_fps", settings.target_fps)), 30, 240)
+	settings.fullscreen_enabled = bool(video.get("fullscreen", settings.fullscreen_enabled))
+	settings.effects_quality = clampi(int(video.get("effects_quality", settings.effects_quality)), 0, 1)
 	var controls: Dictionary = data.get("controls", {})
 	settings.mouse_sensitivity = clampf(float(controls.get("mouse_sensitivity", 1.0)), 0.1, 3.0)
 	settings.controller_sensitivity = clampf(float(controls.get("controller_sensitivity", 1.0)), 0.1, 3.0)
@@ -70,6 +83,8 @@ static func from_dictionary(data: Dictionary) -> GameSettings:
 	settings.flash_intensity = _unit(accessibility.get("flash_intensity", 1.0))
 	settings.aim_assist_strength = _unit(accessibility.get("aim_assist", 0.0))
 	settings.ui_scale = clampf(float(accessibility.get("ui_scale", 1.0)), 0.75, 1.5)
+	settings.vibration_intensity = _unit(accessibility.get("vibration_intensity", 1.0))
+	settings.subtitles_enabled = bool(accessibility.get("subtitles", true))
 	return settings
 
 

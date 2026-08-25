@@ -161,7 +161,7 @@ func _update_aim() -> void:
 		return
 	var controller_aim := Input.get_vector(&"aim_left", &"aim_right", &"aim_up", &"aim_down")
 	if controller_aim.length() * _controller_sensitivity() >= _controller_deadzone():
-		aim_direction = _apply_aim_assist(controller_aim.normalized())
+		aim_direction = _apply_aim_assist(_shape_controller_aim(controller_aim))
 		_controller_aim_active = true
 	elif not _controller_aim_active:
 		var mouse_direction := get_global_mouse_position() - global_position
@@ -184,6 +184,15 @@ func _controller_sensitivity() -> float:
 	if service != null and service.get("settings") is GameSettings:
 		return (service.get("settings") as GameSettings).controller_sensitivity
 	return 1.0
+
+
+func _shape_controller_aim(value: Vector2) -> Vector2:
+	if value.is_zero_approx():
+		return aim_direction
+	var deadzone := _controller_deadzone()
+	var magnitude := clampf((value.length() - deadzone) / maxf(0.01, 1.0 - deadzone), 0.0, 1.0)
+	var shaped_magnitude := pow(magnitude, 1.45 / _controller_sensitivity())
+	return value.normalized().lerp(aim_direction, (1.0 - shaped_magnitude) * 0.08).normalized()
 
 
 func _apply_aim_assist(input_direction: Vector2) -> Vector2:
@@ -231,7 +240,20 @@ func _on_damage_received(_amount: float) -> void:
 	_shake_remaining = 0.14
 	if _damage_audio != null:
 		_damage_audio.play()
+	_vibrate(0.32, 0.11)
 	queue_redraw()
+
+
+func _vibrate(strength: float, duration: float) -> void:
+	var service: Node = get_node_or_null("/root/SettingsService")
+	var intensity := 1.0
+	if service != null and service.get("settings") is GameSettings:
+		intensity = (service.get("settings") as GameSettings).vibration_intensity
+	if intensity <= 0.0:
+		return
+	Input.start_joy_vibration(0, strength * intensity * 0.55, strength * intensity, duration)
+	if OS.has_feature("mobile"):
+		Input.vibrate_handheld(int(duration * 1000.0), strength * intensity)
 
 
 func _on_died() -> void:

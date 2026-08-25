@@ -13,6 +13,9 @@ signal quit_requested
 @onready var complete_overlay: Control = %CompleteOverlay
 
 var _notification_remaining := 0.0
+var _current_title := ""
+var _completed_titles := PackedStringArray()
+var _mission: MissionController
 
 
 func _ready() -> void:
@@ -23,6 +26,9 @@ func _ready() -> void:
 	notification_label.hide()
 	debug_label.hide()
 	complete_overlay.hide()
+	var platform := get_node_or_null("/root/PlatformService") as PlatformServiceNode
+	if platform != null:
+		platform.input_method_changed.connect(func(_method: PlatformServiceNode.InputMethod) -> void: _refresh_prompt())
 
 
 func _process(delta: float) -> void:
@@ -33,13 +39,40 @@ func _process(delta: float) -> void:
 
 
 func set_objective(title: String, details: String, current: int, total: int) -> void:
+	if not _current_title.is_empty() and _current_title != title and not _completed_titles.has(_current_title):
+		_completed_titles.append(_current_title)
+	_current_title = title
 	objective_title.text = "OBJECTIVE %d/%d  •  %s" % [current, total, title.to_upper()]
 	objective_details.text = details
 
 
+func bind_mission(mission: MissionController) -> void:
+	_mission = mission
+
+
 func set_prompt(text: String) -> void:
-	prompt_label.text = "[E / A]  %s" % text
+	prompt_label.set_meta(&"prompt_text", text)
+	_refresh_prompt()
 	prompt_label.visible = not text.is_empty()
+
+
+func objective_summary() -> String:
+	var completed := PackedStringArray()
+	if _mission != null:
+		for objective in _mission.objectives:
+			if objective.state == MissionObjective.State.COMPLETED:
+				completed.append(objective.title)
+	else:
+		completed = _completed_titles.duplicate()
+	var history := "NONE" if completed.is_empty() else ", ".join(completed)
+	return "CURRENT OBJECTIVE\n%s\n\nCOMPLETED  %d\n%s" % [_current_title.to_upper(), completed.size(), history]
+
+
+func _refresh_prompt() -> void:
+	var text := String(prompt_label.get_meta(&"prompt_text", ""))
+	var platform := get_node_or_null("/root/PlatformService") as PlatformServiceNode
+	var prefix := platform.prompt_prefix() if platform != null else "[E]"
+	prompt_label.text = "%s  %s" % [prefix, text]
 
 
 func notify(message: String, duration: float = 2.2) -> void:

@@ -53,9 +53,16 @@ theme_override_font_sizes/font_size = 20
 text = "HULL BREACH  •  CREDITS"
 horizontal_alignment = 1
 
+[node name="VersionLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "HULL BREACH 0.8.0 BETA"
+horizontal_alignment = 1
+
 [node name="CreditsText" type="Label" parent="Content"]
 layout_mode = 2
-text = "Development\nHull Breach contributors\n\nEngine and open-source tools\nGodot Engine  •  GdUnit4\n\nAsset provenance and licences\nSee THIRD_PARTY_ASSETS.md"
+text = "Development\nHull Breach contributors\n\nEngine and open-source tools\nGodot Engine (MIT)  •  GdUnit4 (MIT)\n\nAssets\nOriginal runtime-drawn visuals and synthesized audio\n\nPrivacy\nNo accounts, advertising, analytics, or tracking"
 horizontal_alignment = 1
 
 [node name="MainMenuButton" type="Button" parent="Content"]

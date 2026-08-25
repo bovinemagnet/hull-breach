@@ -28,7 +28,14 @@ This register records deliberate constraints discovered while reviewing the Phas
 - **Description:** Touch controls and exports can be validated in software, but thermal behavior and safe areas require a device.
 - **Impact:** Mobile performance cannot be signed off in CI.
 - **Priority:** High
-- **Resolution:** Required manual Alpha gate; complete real-device Android/iOS, controller-first, and blind-playtest passes before declaring the milestone release-ready.
+- **Resolution:** Phase 5 adds lifecycle pausing, safe-area layout, input release, AAB configuration, and a manual test matrix. Real-device Android/iOS, controller-first, thermal, and blind-playtest passes remain release gates.
+
+## TD-006 — Beta platform matrix needs hardware evidence
+
+- **Description:** Linux startup is automated, while Windows, macOS, Android, iOS, and Steam Deck acceptance still requires representative hardware.
+- **Impact:** Phase 5 code and presets are complete, but those platform rows cannot honestly be marked passing in CI.
+- **Priority:** High
+- **Resolution:** Record results in `docs/development/beta-hardening.md` before Phase 6 release-candidate approval.
 
 ## TD-005 — Runtime level tiles are prototype authoring data
 

@@ -44,6 +44,11 @@ func _set_value(next_value: Vector2) -> void:
 	queue_redraw()
 
 
+func release() -> void:
+	_touch_index = -1
+	_set_value(Vector2.ZERO)
+
+
 func _draw() -> void:
 	var centre := size * 0.5
 	draw_circle(centre, radius, Color(0.1, 0.22, 0.24, 0.42))

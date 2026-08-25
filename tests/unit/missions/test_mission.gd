@@ -20,8 +20,7 @@ func test_objectives_progress_sequentially_and_complete() -> void:
 	assert_int(mission.get_active_objective().state).is_equal(MissionObjective.State.ACTIVE)
 	assert_bool(mission.notify_event(&"second_done")).is_false()
 	assert_bool(mission.notify_event(&"first_done")).is_true()
-	assert_int(mission.active_index).is_equal(1)
-	assert_bool(mission.notify_event(&"second_done")).is_true()
+	assert_int(mission.active_index).is_equal(2)
 	assert_bool(mission.is_complete).is_true()
 
 
@@ -35,3 +34,15 @@ func test_snapshot_restores_active_objective() -> void:
 	restored.restore(state)
 	assert_int(restored.active_index).is_equal(1)
 	assert_int(restored.get_active_objective().state).is_equal(MissionObjective.State.ACTIVE)
+
+
+func test_early_objective_event_survives_checkpoint_and_resolves_later() -> void:
+	var mission := auto_free(MissionController.new()) as MissionController
+	mission.configure(_definition())
+	assert_bool(mission.notify_event(&"second_done")).is_false()
+	var state := mission.snapshot()
+	var restored := auto_free(MissionController.new()) as MissionController
+	restored.configure(_definition())
+	restored.restore(state)
+	assert_bool(restored.notify_event(&"first_done")).is_true()
+	assert_bool(restored.is_complete).is_true()

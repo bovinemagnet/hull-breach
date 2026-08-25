@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 0.8.0 - 2026-08-25
+
+### Added
+
+- Beta lifecycle service with controller disconnect pausing, input-method prompts, mobile safe-area handling, and vibration control.
+- Campaign-wide objective/checkpoint regression coverage, pause context, restart-mission flow, build identification, and Beta packaging.
+- Release/privacy documentation, five-platform preset audit, and campaign p95/p99/memory profiling.
+
+### Changed
+
+- Save schema 3 adds integrity metadata, structural validation, atomic promotion, rollback, and backup/interrupted-write recovery.
+- Mission events are sequence-independent, preventing early interactions from creating objective soft locks.
+- Settings writes are atomic and recoverable; checkpoint restores sanitize unsafe values and grant a short recovery grace period.
+
 ## 0.5.0 - 2026-08-25
 
 ### Added

@@ -319,12 +319,20 @@ func _exit_tree() -> void:
 
 
 func _connect_ui() -> void:
+	mission_hud.bind_mission(mission)
 	combat_hud.resume_requested.connect(func() -> void: _set_paused(false))
 	combat_hud.restart_requested.connect(_restart_checkpoint)
+	combat_hud.restart_mission_requested.connect(_restart_mission)
 	combat_hud.quit_requested.connect(_quit_to_bootstrap)
 	mission_hud.replay_requested.connect(_continue_campaign)
 	mission_hud.quit_requested.connect(_quit_to_bootstrap)
 	mobile_controls.pause_requested.connect(func() -> void: _set_paused(not get_tree().paused))
+	var platform := get_node_or_null("/root/PlatformService") as PlatformServiceNode
+	if platform != null:
+		platform.pause_requested.connect(func(reason: String) -> void: _set_paused(true, reason))
+	var saves := get_node_or_null("/root/SaveService") as SaveServiceNode
+	if saves != null:
+		saves.save_failed.connect(func(_message: String) -> void: mission_hud.notify("SAVE FAILED — PROGRESS NOT WRITTEN", 5.0))
 
 
 func _spawn_initial_enemies() -> void:
@@ -432,6 +440,7 @@ func _save_checkpoint(checkpoint_id: StringName) -> void:
 
 
 func _restore_checkpoint(state: CheckpointState) -> void:
+	state.sanitize(player.global_position, player.health_component.maximum_health)
 	checkpoint_manager.save(state)
 	player.global_position = state.player_position
 	player.restore_health()
@@ -454,6 +463,7 @@ func _restore_checkpoint(state: CheckpointState) -> void:
 	_set_main_power(bool(state.power_state.get(&"main", false)))
 	if bool(world_flags.get("distress_transmitted", false)):
 		_trigger_alarm()
+	_grant_checkpoint_grace()
 
 
 func _on_player_died() -> void:
@@ -461,9 +471,9 @@ func _on_player_died() -> void:
 	combat_hud.show_death()
 
 
-func _set_paused(enabled: bool) -> void:
+func _set_paused(enabled: bool, reason := "PAUSED") -> void:
 	get_tree().paused = enabled
-	combat_hud.show_pause(enabled)
+	combat_hud.show_pause(enabled, reason, mission_hud.objective_summary())
 
 
 func _restart_checkpoint() -> void:
@@ -475,7 +485,17 @@ func _restart_checkpoint() -> void:
 func _restart_mission() -> void:
 	get_tree().paused = false
 	CheckpointManager.clear_pending()
+	if _session() != null:
+		_session().clear_checkpoint(&"station_blackout")
 	get_tree().reload_current_scene()
+
+
+func _grant_checkpoint_grace() -> void:
+	player.set_invulnerable(true)
+	get_tree().create_timer(1.0).timeout.connect(func() -> void:
+		if is_instance_valid(player) and not player.health_component.is_dead:
+			player.set_invulnerable(false)
+	, CONNECT_ONE_SHOT)
 
 
 func _continue_campaign() -> void:

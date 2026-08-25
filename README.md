@@ -1,6 +1,6 @@
 # Hull Breach
 
-Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. Version 0.5.0 Alpha includes an eight-mission campaign, seven enemy archetypes, five weapons, hazards, difficulty profiles, persistent checkpoints, an ending, and credits.
+Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. Version 0.8.0 Beta hardens the eight-mission campaign with recoverable saves, sequence-independent objectives, lifecycle-safe input, accessibility controls, campaign regression coverage, and platform-ready build presets.
 
 ## Development Requirements
 
@@ -30,9 +30,10 @@ Press F6 or F5 to open the main menu, then start or continue the campaign. Devel
 ./tools/profile-combat.sh
 ./tools/profile-phase3.sh
 ./tools/profile-campaign.sh
+./tools/export-beta.sh
 ```
 
-Validation performs a clean import plus content-ID, definition, eight-mission scene, and version checks. Tests use GdUnit4 v6.2.0. The campaign profiler records every mission against the 16.67 ms frame budget. See [testing instructions](docs/development/testing.md) for details.
+Validation performs a clean import plus content, release-document, platform-preset, input, and version checks. Tests use GdUnit4 v6.2.0. The campaign profiler records average, p95, p99, and memory observations against the 16.67 ms average frame budget. See [testing instructions](docs/development/testing.md) and the [Beta hardening matrix](docs/development/beta-hardening.md).
 
 ## Creating a Debug Build
 
@@ -43,6 +44,8 @@ Install the Godot 4.7.2 export templates, then run:
 ```
 
 The Linux executable is written to `build/linux/hull-breach.x86_64`. See [exporting instructions](docs/development/exporting.md) for other presets.
+
+`./tools/export-beta.sh` creates and smoke-tests the versioned Linux package under `build/beta/`.
 
 ## Repository Structure
 

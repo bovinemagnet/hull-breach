@@ -1,7 +1,7 @@
 class_name SaveMigration
 extends RefCounted
 
-const CURRENT_SCHEMA_VERSION := 2
+const CURRENT_SCHEMA_VERSION := 3
 
 
 static func migrate(data: Dictionary) -> Dictionary:
@@ -15,6 +15,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				migrated = _migrate_zero_to_one(migrated)
 			1:
 				migrated = _migrate_one_to_two(migrated)
+			2:
+				migrated = _migrate_two_to_three(migrated)
 			_:
 				return {}
 		schema_version += 1
@@ -39,4 +41,16 @@ static func _migrate_one_to_two(data: Dictionary) -> Dictionary:
 	campaign.campaign_complete = bool(campaign.get("campaign_complete", false))
 	campaign.loadout = campaign.get("loadout", {})
 	migrated.campaign = campaign
+	return migrated
+
+
+static func _migrate_two_to_three(data: Dictionary) -> Dictionary:
+	var migrated := data.duplicate(true)
+	var campaign: Dictionary = migrated.get("campaign", {})
+	campaign.completed_missions = Array(campaign.get("completed_missions", []))
+	campaign.current_mission = String(campaign.get("current_mission", "station_blackout"))
+	campaign.campaign_complete = bool(campaign.get("campaign_complete", false))
+	campaign.loadout = campaign.get("loadout", {}) if campaign.get("loadout", {}) is Dictionary else {}
+	migrated.campaign = campaign
+	migrated.metadata = migrated.get("metadata", {}) if migrated.get("metadata", {}) is Dictionary else {}
 	return migrated
