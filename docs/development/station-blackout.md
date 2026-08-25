@@ -8,7 +8,7 @@ godot --path . --scene res://levels/campaign/station_blackout/station_blackout.t
 
 ## Mission and Controls
 
-Use WASD or the left stick to move, mouse or the right stick to aim, left mouse/trigger to fire, E/A to interact, R/X to reload, and Escape/Start to pause. On Android, two virtual sticks plus Use, Reload, and Pause controls provide the same actions.
+Use WASD, the arrow keys, or the left stick to move; use the mouse or right stick to aim. Left mouse/trigger fires, E/A interacts, R/X reloads, and Escape/Start pauses. On Android, two virtual sticks plus Use, Reload, and Pause controls provide the same actions.
 
 The objective HUD guides the full sequence: inspect Communications, collect Engineering access in Security, enter Engineering, restore auxiliary power, return to Communications, transmit the distress signal, and reach Extraction. Gunshots and doors produce noise; nearby Drones investigate the source before searching. Main power activates blue facility lights, Communications, and a return shortcut. Death restarts from the latest of four in-memory checkpoints.
 

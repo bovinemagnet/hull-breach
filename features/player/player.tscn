@@ -33,7 +33,7 @@ position = Vector2(8, 0)
 position = Vector2(8, 0)
 
 [node name="Flashlight" type="PointLight2D" parent="WeaponPivot"]
-position = Vector2(4, 0)
+position = Vector2(32, 0)
 color = Color(0.72, 0.88, 1, 1)
 energy = 0.72
 texture_scale = 2.6
