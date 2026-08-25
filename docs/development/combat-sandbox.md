@@ -12,7 +12,7 @@ The arena is deliberately larger than the viewport and includes open ground, a n
 
 | Action | Mouse and keyboard | Controller |
 | --- | --- | --- |
-| Move | WASD | Left stick |
+| Move | WASD or arrow keys | Left stick |
 | Aim | Mouse | Right stick |
 | Fire | Left mouse | Right trigger |
 | Reload | R | X / Square |

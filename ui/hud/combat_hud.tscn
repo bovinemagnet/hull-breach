@@ -123,14 +123,14 @@ layout_mode = 0
 anchors_preset = 3
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -285.0
+offset_left = -350.0
 offset_top = 10.0
 offset_right = -12.0
 offset_bottom = 34.0
 grow_horizontal = 0
 theme_override_colors/font_color = Color(0.6, 0.66, 0.68, 1)
 theme_override_font_sizes/font_size = 11
-text = "WASD / STICK  •  AIM  •  FIRE  •  R RELOAD"
+text = "WASD / ARROWS / STICK  •  AIM  •  FIRE  •  R RELOAD"
 horizontal_alignment = 2
 
 [node name="PauseOverlay" type="ColorRect" parent="."]
