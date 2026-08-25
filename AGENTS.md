@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository contains the Godot project foundation and evolving product plans. `README.md` gives the project summary, while `docs/prd/prd.md` defines the product and `docs/prd/phase-0.md` to `phase-6.md` contain milestone plans. Treat future-phase structures as plans, not existing APIs.
+This repository contains the Godot project and evolving product plans. `README.md` gives the project summary, while `docs/prd/prd.md` defines the product and `docs/prd/phase-0.md` to `phase-6.md` contain milestone plans. Phase 1 gameplay lives in `features/`, `ui/hud/`, and `levels/dev/combat_sandbox/`; treat later-phase structures as plans, not existing APIs.
 
 Keep shared infrastructure in `core/`, gameplay grouped by feature under `features/` (for example, `features/doors/door.gd` beside `door.tscn`), levels in `levels/`, UI in `ui/`, configuration resources in `resources/`, and tests in `tests/unit/` or `tests/integration/`. Put original assets in `assets/original/` and licensed external assets in `assets/third_party/`.
 
@@ -14,6 +14,7 @@ Use Godot 4.7.2 Standard (not .NET). Run the repository scripts from the project
 godot --editor --path .                 # Open the project locally
 godot --headless --path . --import      # Validate imports and scene references
 ./tools/test.sh                         # Run the GdUnit4 suite
+./tools/profile-combat.sh               # Run the 50-Drone stress baseline
 ./tools/export-debug.sh                 # Produce a debug export
 ```
 

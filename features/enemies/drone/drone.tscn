@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/drone/drone.gd" id="1_drone"]
+[ext_resource type="Resource" path="res://features/enemies/drone/drone.tres" id="2_definition"]
+[ext_resource type="Script" path="res://features/combat/damage/health_component.gd" id="3_health"]
+
+[sub_resource type="CircleShape2D" id="CircleShape_drone"]
+radius = 12.0
+
+[node name="Drone" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_drone")
+definition = ExtResource("2_definition")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape_drone")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("3_health")
+maximum_health = 50.0

@@ -2,8 +2,8 @@ class_name GameVersion
 extends RefCounted
 
 const MAJOR := 0
-const MINOR := 0
-const PATCH := 1
+const MINOR := 1
+const PATCH := 0
 
 
 static func as_string() -> String:

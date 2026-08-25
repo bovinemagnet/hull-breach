@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/weapons/weapon.gd" id="1_weapon"]
+[ext_resource type="Resource" path="res://features/weapons/pulse_rifle/pulse_rifle.tres" id="2_definition"]
+[ext_resource type="PackedScene" path="res://features/combat/projectiles/projectile.tscn" id="3_projectile"]
+
+[node name="PulseRifle" type="Node2D"]
+script = ExtResource("1_weapon")
+definition = ExtResource("2_definition")
+projectile_scene = ExtResource("3_projectile")
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(25, 0)

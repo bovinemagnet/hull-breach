@@ -6,8 +6,8 @@ config_version=5
 [application]
 
 config/name="Hull Breach"
-config/version="0.0.1"
-run/main_scene="res://levels/dev/bootstrap.tscn"
+config/version="0.1.0"
+run/main_scene="res://levels/dev/combat_sandbox/combat_sandbox.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]
@@ -101,3 +101,14 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.018, 0.027, 0.035, 1)
+
+[layer_names]
+
+2d_physics/layer_1="World"
+2d_physics/layer_2="Player"
+2d_physics/layer_3="Enemy"
+2d_physics/layer_4="PlayerProjectile"
+2d_physics/layer_5="EnemyProjectile"
+2d_physics/layer_6="Pickup"
+2d_physics/layer_7="Interaction"
+2d_physics/layer_8="Hazard"

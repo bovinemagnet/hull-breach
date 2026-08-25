@@ -22,9 +22,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -180.0
-offset_top = -100.0
+offset_top = -140.0
 offset_right = 180.0
-offset_bottom = 100.0
+offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -48,10 +48,20 @@ horizontal_alignment = 1
 
 [node name="Version" type="Label" parent="UI/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Version: 0.0.1"
+text = "Version: 0.1.0"
 horizontal_alignment = 1
 
 [node name="Environment" type="Label" parent="UI/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Godot: 4.7.2\nBuild: Development"
 horizontal_alignment = 1
+
+[node name="LaunchButton" type="Button" parent="UI/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Launch Combat Sandbox"
+
+[node name="QuitButton" type="Button" parent="UI/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"

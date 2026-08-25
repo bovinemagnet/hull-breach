@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlayerConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/player/player_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+move_speed = 180.0
+acceleration = 1600.0
+deceleration = 1800.0
+maximum_health = 100.0
+controller_aim_deadzone = 0.2
+controller_move_deadzone = 0.15
+camera_look_ahead = 42.0
