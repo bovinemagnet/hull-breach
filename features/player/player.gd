@@ -42,6 +42,7 @@ func _ready() -> void:
 	weapon = weapon_inventory.current_weapon()
 	_build_audio()
 	flashlight.texture = LightTextureFactory.cone()
+	flashlight.offset = Vector2(flashlight.texture.get_width() * flashlight.texture_scale * 0.5, 0.0)
 	queue_redraw()
 
 
