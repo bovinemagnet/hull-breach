@@ -1,0 +1,56 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://levels/campaign/medical_wing/medical_wing.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2"]
+[ext_resource type="Script" path="res://features/missions/mission.gd" id="3"]
+[ext_resource type="Resource" path="res://levels/campaign/medical_wing/medical_wing_mission.tres" id="4"]
+[ext_resource type="Script" path="res://features/power/power_grid.gd" id="5"]
+[ext_resource type="Script" path="res://features/noise/noise_system.gd" id="6"]
+[ext_resource type="Script" path="res://features/checkpoints/checkpoint_manager.gd" id="7"]
+[ext_resource type="Script" path="res://features/missions/extraction_zone.gd" id="8"]
+[ext_resource type="PackedScene" path="res://ui/hud/combat_hud.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://ui/mission/mission_hud.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://ui/mobile/mobile_controls.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://ui/debug/development_debug_overlay.tscn" id="12"]
+
+[sub_resource type="CircleShape2D" id="extraction"]
+radius = 48.0
+
+[node name="MedicalWing" type="Node2D"]
+script = ExtResource("1")
+
+[node name="World" type="Node2D" parent="."]
+[node name="Floor" type="TileMapLayer" parent="World"]
+[node name="FloorDetail" type="TileMapLayer" parent="World"]
+[node name="Walls" type="TileMapLayer" parent="World"]
+[node name="NavigationRegion" type="NavigationRegion2D" parent="World"]
+[node name="StaticGeometry" type="Node2D" parent="World"]
+[node name="Interactive" type="Node2D" parent="World"]
+[node name="Doors" type="Node2D" parent="World/Interactive"]
+[node name="Terminals" type="Node2D" parent="World/Interactive"]
+[node name="Pickups" type="Node2D" parent="World/Interactive"]
+[node name="Extraction" type="Area2D" parent="World/Interactive"]
+position = Vector2(190, 830)
+script = ExtResource("8")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Interactive/Extraction"]
+shape = SubResource("extraction")
+[node name="Hazards" type="Node2D" parent="World"]
+[node name="Enemies" type="Node2D" parent="."]
+[node name="SpawnPoints" type="Node2D" parent="."]
+[node name="MissionTriggers" type="Node2D" parent="."]
+[node name="Encounters" type="Node" parent="."]
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(160, 180)
+[node name="Mission" type="Node" parent="."]
+script = ExtResource("3")
+definition = ExtResource("4")
+[node name="PowerGrid" type="Node" parent="."]
+script = ExtResource("5")
+[node name="NoiseSystem" type="Node2D" parent="."]
+script = ExtResource("6")
+[node name="CheckpointManager" type="Node" parent="."]
+script = ExtResource("7")
+[node name="CombatHud" parent="." instance=ExtResource("9")]
+[node name="MissionHud" parent="." instance=ExtResource("10")]
+[node name="MobileControls" parent="." instance=ExtResource("11")]
+[node name="DevelopmentDebugOverlay" parent="." instance=ExtResource("12")]

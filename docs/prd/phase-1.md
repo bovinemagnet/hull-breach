@@ -2,7 +2,7 @@
 
 **Phase:** 1 — Combat Sandbox
 **Project:** Hull Breach
-**Status:** Proposed
+**Status:** Implemented — pending subjective playtest sign-off
 **Engine:** Godot 4.7.2 Standard
 **Language:** GDScript
 **Renderer:** Compatibility

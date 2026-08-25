@@ -12,4 +12,12 @@ The script runs GdUnit4 headlessly against `tests/` and writes reports under ign
 
 Put deterministic logic tests in `tests/unit/test_<subject>.gd` and scene/system boundary tests in `tests/integration/test_<subject>.gd`. Test state changes, calculations, resource validation, serialization, and regressions. Avoid brittle tests for animation, transforms, or trivial node wiring.
 
-Before submitting a pull request, run both `./tools/validate.sh` and `./tools/test.sh`. CI repeats these checks before producing the debug build. Phase 0 has no coverage percentage gate.
+Before submitting a pull request, run `./tools/validate.sh` and `./tools/test.sh`. The validator also checks content IDs, resource definitions, campaign scenes, and version consistency. For performance-sensitive changes, run:
+
+```bash
+./tools/profile-station-blackout.sh
+./tools/profile-phase3.sh
+./tools/profile-campaign.sh
+```
+
+The Phase 3 stress profile covers 50 mixed enemies and 100 projectiles. The campaign profile loads all eight missions and reports each average against the 16.67 ms frame budget. CI repeats validation and tests before producing the debug build. There is no percentage coverage gate; new systems and bug fixes require focused regression tests.

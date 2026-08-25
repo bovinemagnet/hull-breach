@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/weapons/weapon_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+id = &"hb4_pulse_rifle"
+display_name = "HB-4 Pulse Rifle"
+damage = 20.0
+rounds_per_second = 8.0
+magazine_size = 30
+reserve_ammo = 120
+reload_duration = 1.6
+projectile_speed = 700.0
+projectile_lifetime = 1.5
+spread_degrees = 2.0
+projectiles_per_shot = 1
+automatic = true
+noise_radius = 340.0
+fire_mode = 1
+ammo_type = &"energy"
+preferred_slot = 1
+recoil = 1.2

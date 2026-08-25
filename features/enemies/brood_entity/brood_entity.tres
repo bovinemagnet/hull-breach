@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/common/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"brood_entity"
+display_name = "Brood Entity"
+combat_role = &"boss_spawner"
+body_colour = Color(0.68, 0.1, 0.42, 1)
+maximum_health = 420.0
+move_speed = 38.0
+attack_damage = 26.0
+attack_range = 52.0
+attack_cooldown = 1.8
+detection_range = 900.0
+attack_windup = 0.58
+vision_range = 700.0
+hearing_sensitivity = 1.5
+knockback_resistance = 1.0

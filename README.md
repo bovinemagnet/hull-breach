@@ -1,6 +1,6 @@
 # Hull Breach
 
-Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. It is built with Godot and is currently at the project-foundation stage; no gameplay is implemented yet.
+Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. Version 0.5.0 Alpha includes an eight-mission campaign, seven enemy archetypes, five weapons, hazards, difficulty profiles, persistent checkpoints, an ending, and credits.
 
 ## Development Requirements
 
@@ -20,16 +20,19 @@ cd hull-breach
 godot --editor --path .
 ```
 
-Press F6 or F5 to run the development bootstrap scene.
+Press F6 or F5 to open the main menu, then start or continue the campaign. Development builds expose all eight missions through Mission Select. Individual scenes under `levels/campaign/` can also run directly; the combat sandbox remains at `levels/dev/combat_sandbox/combat_sandbox.tscn`.
 
 ## Running Tests and Validation
 
 ```bash
 ./tools/validate.sh
 ./tools/test.sh
+./tools/profile-combat.sh
+./tools/profile-phase3.sh
+./tools/profile-campaign.sh
 ```
 
-Validation performs a clean headless import. Tests use the vendored GdUnit4 v6.2.0 addon. See [testing instructions](docs/development/testing.md) for editor and command-line options.
+Validation performs a clean import plus content-ID, definition, eight-mission scene, and version checks. Tests use GdUnit4 v6.2.0. The campaign profiler records every mission against the 16.67 ms frame budget. See [testing instructions](docs/development/testing.md) for details.
 
 ## Creating a Debug Build
 

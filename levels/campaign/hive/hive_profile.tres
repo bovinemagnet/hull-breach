@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CampaignMissionProfile" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/campaign/campaign_mission_profile.gd" id="1"]
+[ext_resource type="Resource" path="res://levels/campaign/hive/hive_mission.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+mission_id = &"hive"
+campaign_index = 7
+mission_definition = ExtResource("2")
+theme_name = "The Hive"
+ambience_cue = "organic movement and bioluminescence"
+briefing = "Destroy the nest nodes, expose the brood core, and escape."
+floor_colour = Color(0.075, 0.025, 0.055, 1)
+accent_colour = Color(0.74, 0.2, 0.58, 1)
+objective_positions = PackedVector2Array(140, 450, 310, 180, 560, 450, 700, 750, 940, 450, 1380, 450)
+checkpoint_objectives = PackedInt32Array(1, 3, 4)
+enemy_scene_paths = PackedStringArray("res://features/enemies/swarm/swarm.tscn", "res://features/enemies/stalker/stalker.tscn", "res://features/enemies/brood_entity/brood_entity.tscn")
+enemies_per_beat = PackedInt32Array(8, 3, 1)

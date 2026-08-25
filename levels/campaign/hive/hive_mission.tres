@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"hive"
+display_name = "The Hive"
+description = "Destroy the primary brood chamber."
+objective_ids = PackedStringArray("entry", "nodes", "barrier", "brood_sacs", "entity", "escape")
+objective_titles = PackedStringArray("Enter the Infestation", "Destroy Nest Nodes", "Open the Deep Hive", "Rupture Brood Sacs", "Destroy the Brood Entity", "Escape the Hive")
+objective_details = PackedStringArray("Follow the consumed transit line.", "Clear the biological nodes feeding the barrier.", "Pass through the collapsing membrane.", "Expose the entity's core.", "End the primary infestation.", "Reach the destabilised transit lock.")
+objective_events = PackedStringArray("hive_entered", "nodes_destroyed", "barrier_open", "sacs_destroyed", "brood_destroyed", "hive_extracted")
+objective_kinds = PackedInt32Array(0, 1, 0, 1, 0, 3)

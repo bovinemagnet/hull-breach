@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/common/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"hunter"
+display_name = "Hunter"
+combat_role = &"flanker"
+body_colour = Color(0.83, 0.28, 0.68, 1)
+maximum_health = 68.0
+move_speed = 155.0
+attack_damage = 18.0
+attack_range = 34.0
+attack_cooldown = 1.05
+detection_range = 620.0
+attack_windup = 0.32
+vision_range = 480.0
+search_duration = 4.0
+hearing_sensitivity = 1.25
+knockback_resistance = 0.25

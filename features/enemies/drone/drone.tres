@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/common/enemy_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+id = &"drone"
+display_name = "Breach Drone"
+maximum_health = 50.0
+move_speed = 90.0
+attack_damage = 10.0
+attack_range = 30.0
+attack_cooldown = 0.8
+detection_range = 700.0
+attack_windup = 0.18
+vision_range = 380.0
+search_duration = 3.2
+hearing_sensitivity = 1.0

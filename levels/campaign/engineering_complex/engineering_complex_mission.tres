@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"engineering_complex"
+display_name = "Engineering Complex"
+description = "Restore the station transit through layered engineering systems."
+objective_ids = PackedStringArray("transit", "coolant", "power", "control", "reach_transit", "extract")
+objective_titles = PackedStringArray("Reach Transit Control", "Restore Cooling", "Restore Power", "Repair Control", "Activate Transit", "Board Transit")
+objective_details = PackedStringArray("Assess the disabled transit network.", "Bypass the ruptured coolant circuit.", "Bring the engineering bus online.", "Repair the transit control relay.", "Return to the platform as machinery wakes.", "Leave for the reactor sector.")
+objective_events = PackedStringArray("transit_reached", "cooling_restored", "power_restored", "control_repaired", "transit_activated", "engineering_extracted")
+objective_kinds = PackedInt32Array(0, 1, 1, 1, 0, 3)

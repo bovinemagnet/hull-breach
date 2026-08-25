@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+id = &"station_blackout"
+display_name = "Station Blackout"
+description = "Restore communications at C-12 and escape the facility."
+objective_ids = PackedStringArray("communications_offline", "engineering_access", "reach_engineering", "restore_power", "return_communications", "transmit_distress", "extract")
+objective_titles = PackedStringArray("Reach Communications", "Acquire Engineering Access", "Reach Engineering", "Activate Auxiliary Power", "Return to Communications", "Transmit Distress Signal", "Reach Extraction")
+objective_details = PackedStringArray("Follow facility signs to COMMS.", "Search the Security Office.", "Use the credential at the Engineering door.", "Find the auxiliary power control.", "The communications array is now powered.", "Use the communications terminal.", "Evacuate through the docking airlock.")
+objective_events = PackedStringArray("communications_offline", "engineering_access_collected", "engineering_reached", "power_restored", "communications_returned", "distress_transmitted", "extraction_reached")
+objective_kinds = PackedInt32Array(0, 2, 0, 1, 0, 1, 3)

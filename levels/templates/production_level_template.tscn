@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[node name="ProductionLevel" type="Node2D"]
+
+[node name="World" type="Node2D" parent="."]
+[node name="Floor" type="TileMapLayer" parent="World"]
+[node name="FloorDetail" type="TileMapLayer" parent="World"]
+[node name="Walls" type="TileMapLayer" parent="World"]
+[node name="Decoration" type="TileMapLayer" parent="World"]
+[node name="NavigationRegion" type="NavigationRegion2D" parent="World"]
+[node name="StaticGeometry" type="Node2D" parent="World"]
+[node name="Interactive" type="Node2D" parent="World"]
+[node name="Doors" type="Node2D" parent="World/Interactive"]
+[node name="Terminals" type="Node2D" parent="World/Interactive"]
+[node name="Pickups" type="Node2D" parent="World/Interactive"]
+[node name="Hazards" type="Node2D" parent="World"]
+
+[node name="Enemies" type="Node2D" parent="."]
+[node name="SpawnPoints" type="Node2D" parent="."]
+[node name="Encounters" type="Node" parent="."]
+[node name="MissionTriggers" type="Node2D" parent="."]
+[node name="Lighting" type="Node2D" parent="."]
+[node name="Audio" type="Node" parent="."]

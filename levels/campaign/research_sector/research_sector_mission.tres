@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"research_sector"
+display_name = "Research Sector"
+description = "Recover the experiment archive and identify the source organism."
+objective_ids = PackedStringArray("lockdown", "lab_access", "containment", "records", "archive", "extract")
+objective_titles = PackedStringArray("Enter Security", "Reactivate Lab Access", "Enter Containment", "Find Experiment Records", "Recover the Archive", "Escape the Lab")
+objective_details = PackedStringArray("Proceed through the dark security wing.", "Restore laboratory lighting and access.", "Follow the containment corridor.", "Search for the source-organism records.", "Download the experiment archive.", "Escape before lockdown seals the sector.")
+objective_events = PackedStringArray("security_entered", "lab_access_restored", "containment_entered", "records_found", "archive_recovered", "research_extracted")
+objective_kinds = PackedInt32Array(0, 1, 0, 2, 1, 3)

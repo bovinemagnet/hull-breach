@@ -2,7 +2,7 @@
 
 **Phase:** 2 — Vertical Slice
 **Project:** Hull Breach
-**Status:** Proposed
+**Status:** Implemented — pending real-device Android and blind-playtest sign-off
 **Engine:** Godot 4.7.2 Standard
 **Language:** GDScript
 **Renderer:** Compatibility

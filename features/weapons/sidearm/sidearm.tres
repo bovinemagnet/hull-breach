@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/weapons/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"sidearm"
+display_name = "M-2 Sidearm"
+damage = 28.0
+rounds_per_second = 4.0
+magazine_size = 12
+reserve_ammo = 60
+reload_duration = 1.2
+projectile_speed = 780.0
+projectile_lifetime = 1.4
+spread_degrees = 0.6
+projectiles_per_shot = 1
+automatic = false
+noise_radius = 240.0
+fire_mode = 0
+ammo_type = &"ballistic"
+preferred_slot = 0
+recoil = 0.8
