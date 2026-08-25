@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Install Godot and export templates
+        uses: chickensoft-games/setup-godot@v2.4.1
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: true
+
+      - name: Confirm engine version
+        run: godot --version
+
+      - name: Validate project
+        run: ./tools/validate.sh
+
+      - name: Run tests
+        run: ./tools/test.sh
+
+      - name: Build Linux debug export
+        run: ./tools/export-debug.sh
+
+      - name: Upload Linux debug build
+        uses: actions/upload-artifact@v7
+        with:
+          name: hull-breach-linux-debug
+          path: build/linux/hull-breach.x86_64
+          if-no-files-found: error
+          retention-days: 7

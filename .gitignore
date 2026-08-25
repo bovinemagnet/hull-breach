@@ -1,17 +1,42 @@
-# Godot 4+ specific ignores
+# Godot
 .godot/
-.nomedia
 
-# Godot-specific ignores
-.import/
-export.cfg
+# Builds / exports
+build/
+builds/
+dist/
+exports/
+reports/
+
+# Godot sensitive export credentials
+.godot/export_credentials.cfg
 export_credentials.cfg
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
 *.tmp
+*.temp
+*.log
+*~
 
-# Imported translations (automatically generated from CSV files)
-*.translation
+# Signing credentials
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
 
-# Mono-specific ignores
-.mono/
-data_*/
-mono_crash.*.json
+# Editor backup files
+*.bak
