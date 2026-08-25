@@ -37,6 +37,9 @@ jobs:
       - name: Run tests
         run: ./tools/test.sh
 
+      - name: Profile campaign
+        run: ./tools/profile-campaign.sh
+
       - name: Build Linux debug export
         run: ./tools/export-debug.sh
 
@@ -47,3 +50,14 @@ jobs:
           path: build/linux/hull-breach.x86_64
           if-no-files-found: error
           retention-days: 7
+
+      - name: Build and smoke-test Linux Beta
+        run: ./tools/export-beta.sh
+
+      - name: Upload Linux Beta package
+        uses: actions/upload-artifact@v7
+        with:
+          name: hull-breach-0.8.0-linux-${{ github.sha }}
+          path: build/beta/hull-breach-0.8.0-linux-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 14

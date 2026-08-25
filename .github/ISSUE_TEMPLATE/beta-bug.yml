@@ -1,0 +1,63 @@
+name: Beta bug report
+description: Report a reproducible Hull Breach Beta defect
+title: "[P2] "
+labels: [bug]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - P0 — Blocker
+        - P1 — Critical
+        - P2 — Major
+        - P3 — Minor
+        - P4 — Polish
+    validations:
+      required: true
+  - type: input
+    id: build
+    attributes:
+      label: Build version
+      placeholder: 0.8.0 Beta (build ID from menu or pause screen)
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and input
+      placeholder: Linux 6.x, Xbox controller
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Mission, room, difficulty, and checkpoint
+      placeholder: M06 Reactor Core, coolant room, Standard, reactor_core_03
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: Numbered, minimal steps from a known checkpoint
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result and frequency
+      placeholder: Include whether it occurs always, often, or once
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs, screenshot, or video
+      description: Remove personal information and never attach credentials.

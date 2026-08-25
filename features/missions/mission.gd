@@ -12,6 +12,7 @@ signal mission_completed
 var objectives: Array[MissionObjective] = []
 var active_index := -1
 var is_complete := false
+var satisfied_events: Dictionary = {}
 
 
 func _ready() -> void:
@@ -34,6 +35,7 @@ func configure(p_definition: MissionDefinition) -> void:
 		objectives.append(objective)
 	active_index = 0
 	is_complete = false
+	satisfied_events.clear()
 	objectives[active_index].activate()
 	_emit_active_objective()
 
@@ -53,20 +55,29 @@ func _process(delta: float) -> void:
 
 
 func notify_event(event_id: StringName) -> bool:
+	if event_id.is_empty() or is_complete:
+		return false
+	satisfied_events[event_id] = true
+	return _resolve_satisfied_events()
+
+
+func _resolve_satisfied_events() -> bool:
+	var progressed := false
 	var objective := get_active_objective()
-	if objective == null or objective.event_id != event_id:
-		return false
-	if not objective.complete():
-		return false
-	objective_completed.emit(objective.id, objective.title)
-	active_index += 1
-	if active_index >= objectives.size():
-		is_complete = true
-		mission_completed.emit()
-		return true
-	objectives[active_index].activate()
-	_emit_active_objective()
-	return true
+	while objective != null and satisfied_events.has(objective.event_id):
+		if not objective.complete():
+			break
+		progressed = true
+		objective_completed.emit(objective.id, objective.title)
+		active_index += 1
+		if active_index >= objectives.size():
+			is_complete = true
+			mission_completed.emit()
+			return true
+		objectives[active_index].activate()
+		_emit_active_objective()
+		objective = get_active_objective()
+	return progressed
 
 
 func skip_current() -> void:
@@ -101,6 +112,7 @@ func snapshot() -> Dictionary:
 		"completed_ids": completed_ids,
 		"is_complete": is_complete,
 		"objective_states": _objective_states(),
+		"satisfied_events": satisfied_events.keys(),
 	}
 
 
@@ -109,6 +121,9 @@ func restore(data: Dictionary) -> void:
 	var objective_states: Dictionary = data.get("objective_states", {})
 	active_index = int(data.get("active_index", 0))
 	is_complete = bool(data.get("is_complete", false))
+	satisfied_events.clear()
+	for event_id in data.get("satisfied_events", []):
+		satisfied_events[StringName(event_id)] = true
 	for index in objectives.size():
 		var objective := objectives[index]
 		if objective_states.has(String(objective.id)):

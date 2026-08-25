@@ -17,12 +17,13 @@ func _ready() -> void:
 func load_campaign() -> bool:
 	var service := _save_service()
 	save_data = service.load() if service != null else {}
+	var had_save := not save_data.is_empty()
 	if save_data.is_empty():
 		save_data = service.default_data() if service != null else _fallback_data()
 	difficulty_id = StringName(save_data.get("profile", {}).get("difficulty", "standard"))
 	difficulty = DifficultyService.load_profile(difficulty_id)
 	campaign_changed.emit()
-	return service.has_save() if service != null else false
+	return had_save
 
 
 func new_game(selected_difficulty: StringName) -> void:
@@ -36,7 +37,7 @@ func new_game(selected_difficulty: StringName) -> void:
 
 
 func continue_campaign() -> bool:
-	if not load_campaign() or _save_service() == null or not _save_service().has_save():
+	if not load_campaign() or _save_service() == null:
 		return false
 	var mission_id := StringName(save_data.get("campaign", {}).get("current_mission", "station_blackout"))
 	transition_to_mission(mission_id)
@@ -64,6 +65,13 @@ func campaign_loadout() -> Dictionary:
 
 func save_loadout(loadout: Dictionary) -> void:
 	save_data.campaign.loadout = loadout.duplicate(true)
+
+
+func clear_checkpoint(mission_id: StringName) -> bool:
+	var active: Dictionary = save_data.get("active_mission", {})
+	if StringName(active.get("id", "")) == mission_id:
+		save_data.active_mission = {}
+	return _save_service().save(save_data) if _save_service() != null else true
 
 
 func complete_mission(result: MissionResult) -> void:

@@ -10,10 +10,13 @@ var controller_sensitivity_slider: HSlider
 var touch_sensitivity_slider: HSlider
 var screen_shake_slider: HSlider
 var flash_intensity_slider: HSlider
+var vibration_slider: HSlider
+var new_game_confirmation: ConfirmationDialog
+var save_error_dialog: AcceptDialog
 
 
 func _ready() -> void:
-	%NewGameButton.pressed.connect(_show_difficulty)
+	%NewGameButton.pressed.connect(_request_new_game)
 	continue_button.pressed.connect(func() -> void: GameSession.continue_campaign())
 	%SettingsButton.pressed.connect(_show_settings)
 	%QuitButton.pressed.connect(get_tree().quit)
@@ -25,8 +28,23 @@ func _ready() -> void:
 	continue_button.disabled = not SaveService.has_save()
 	_build_campaign_actions()
 	_build_accessibility_settings()
+	_build_safety_dialogs()
 	_populate_settings()
+	$Tagline.text = "SURVIVE THE CAMPAIGN  •  %s" % GameVersion.display_string().to_upper()
+	if SaveService.last_status == "damaged":
+		save_error_dialog.dialog_text = "SAVE DATA IS DAMAGED\n\nStart a new game or return to the menu."
+		save_error_dialog.popup_centered()
+	elif SaveService.last_status.begins_with("recovered_"):
+		save_error_dialog.dialog_text = "SAVE DATA RECOVERED\n\n%s" % SaveService.last_error
+		save_error_dialog.popup_centered()
 	%NewGameButton.grab_focus()
+
+
+func _request_new_game() -> void:
+	if SaveService.has_save():
+		new_game_confirmation.popup_centered()
+	else:
+		_show_difficulty()
 
 
 func _show_difficulty() -> void:
@@ -105,6 +123,26 @@ func _build_accessibility_settings() -> void:
 	touch_sensitivity_slider = _add_settings_slider("Touch Sensitivity", 0.25, 2.0)
 	screen_shake_slider = _add_settings_slider("Screen Shake", 0.0, 1.0)
 	flash_intensity_slider = _add_settings_slider("Flash Intensity", 0.0, 1.0)
+	vibration_slider = _add_settings_slider("Vibration", 0.0, 1.0)
+	var reset_button := Button.new()
+	reset_button.name = "ResetSettingsButton"
+	reset_button.text = "Reset to Defaults"
+	reset_button.pressed.connect(_reset_settings)
+	$SettingsPanel/Grid.add_child(reset_button)
+	var spacer := Control.new()
+	$SettingsPanel/Grid.add_child(spacer)
+	$SettingsPanel/Grid.move_child(%SettingsBackButton, $SettingsPanel/Grid.get_child_count() - 1)
+
+
+func _build_safety_dialogs() -> void:
+	new_game_confirmation = ConfirmationDialog.new()
+	new_game_confirmation.title = "Start New Game"
+	new_game_confirmation.dialog_text = "Starting a new game replaces the current campaign save. Continue?"
+	new_game_confirmation.confirmed.connect(_show_difficulty)
+	add_child(new_game_confirmation)
+	save_error_dialog = AcceptDialog.new()
+	save_error_dialog.title = "Save Data"
+	add_child(save_error_dialog)
 
 
 func _add_settings_slider(label_text: String, minimum: float, maximum: float) -> HSlider:
@@ -134,6 +172,7 @@ func _populate_settings() -> void:
 	touch_sensitivity_slider.value = settings.touch_sensitivity
 	screen_shake_slider.value = settings.screen_shake_intensity
 	flash_intensity_slider.value = settings.flash_intensity
+	vibration_slider.value = settings.vibration_intensity
 
 
 func _save_and_show_main() -> void:
@@ -150,5 +189,11 @@ func _save_and_show_main() -> void:
 	settings.touch_sensitivity = touch_sensitivity_slider.value
 	settings.screen_shake_intensity = screen_shake_slider.value
 	settings.flash_intensity = flash_intensity_slider.value
+	settings.vibration_intensity = vibration_slider.value
 	SettingsService.save_settings()
 	_show_main()
+
+
+func _reset_settings() -> void:
+	SettingsService.reset_to_defaults()
+	_populate_settings()

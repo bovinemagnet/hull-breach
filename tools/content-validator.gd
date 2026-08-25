@@ -6,6 +6,12 @@ const REQUIRED_SCENES := [
 	"res://ui/credits/credits.tscn",
 	"res://levels/templates/production_level_template.tscn",
 ]
+const REQUIRED_RELEASE_FILES := [
+	"res://LICENSE",
+	"res://PRIVACY.md",
+	"res://THIRD_PARTY_ASSETS.md",
+	"res://docs/development/beta-hardening.md",
+]
 
 var _errors := PackedStringArray()
 var _ids: Dictionary = {}
@@ -17,7 +23,11 @@ func _initialize() -> void:
 	for path in required_scenes:
 		if not ResourceLoader.exists(path) or ResourceLoader.load(path) == null:
 			_errors.append("Missing or invalid scene: %s" % path)
+	for path in REQUIRED_RELEASE_FILES:
+		if not FileAccess.file_exists(path):
+			_errors.append("Missing release document: %s" % path)
 	_validate_campaign_catalog()
+	_validate_beta_configuration()
 	for root_path in ROOTS:
 		_scan_directory(root_path)
 	if ProjectSettings.get_setting("application/config/version", "") != GameVersion.as_string():
@@ -85,3 +95,20 @@ func _validate_campaign_catalog() -> void:
 		seen[mission_id] = true
 		if CampaignCatalog.scene_for(mission_id).is_empty():
 			_errors.append("Campaign mission has no scene: %s" % mission_id)
+
+
+func _validate_beta_configuration() -> void:
+	for autoload_name in ["SaveService", "SettingsService", "GameSession", "MusicDirector", "PlatformService"]:
+		if not ProjectSettings.has_setting("autoload/%s" % autoload_name):
+			_errors.append("Missing required autoload: %s" % autoload_name)
+	for action in ["move_left", "move_right", "move_up", "move_down", "aim_left", "aim_right", "aim_up", "aim_down", "fire", "interact", "reload", "pause"]:
+		if not InputMap.has_action(action):
+			_errors.append("Missing required input action: %s" % action)
+	var export_file := FileAccess.open("res://export_presets.cfg", FileAccess.READ)
+	if export_file == null:
+		_errors.append("Missing export presets")
+		return
+	var export_text := export_file.get_as_text()
+	for platform_name in ["Linux", "Windows Desktop", "macOS", "Android", "iOS"]:
+		if not export_text.contains('name="%s"' % platform_name):
+			_errors.append("Missing export preset: %s" % platform_name)

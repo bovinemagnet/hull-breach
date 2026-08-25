@@ -17,8 +17,9 @@ godot --headless --path . --import      # Validate imports and scene references
 ./tools/profile-combat.sh               # Run the 50-Drone stress baseline
 ./tools/profile-station-blackout.sh     # Profile the 20-enemy vertical slice
 ./tools/profile-phase3.sh               # Profile 50 mixed enemies and 100 projectiles
-./tools/profile-campaign.sh             # Profile all eight Alpha missions
+./tools/profile-campaign.sh             # Profile all eight Beta missions
 ./tools/export-debug.sh                 # Produce a debug export
+./tools/export-beta.sh                  # Package and smoke-test the Linux Beta
 ```
 
 Prefer repository scripts once present; do not add Make, Gradle, or another wrapper build system.

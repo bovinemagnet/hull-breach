@@ -3,6 +3,7 @@ extends CanvasLayer
 
 signal resume_requested
 signal restart_requested
+signal restart_mission_requested
 signal quit_requested
 
 @onready var health_bar: ProgressBar = %HealthBar
@@ -17,6 +18,8 @@ signal quit_requested
 @onready var pause_restart_button: Button = %PauseRestartButton
 @onready var quit_button: Button = %QuitButton
 @onready var death_restart_button: Button = %DeathRestartButton
+@onready var pause_title: Label = %PauseTitle
+@onready var pause_context: Label = %PauseContext
 
 var _weapon: Weapon
 
@@ -25,8 +28,14 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	resume_button.pressed.connect(func() -> void: resume_requested.emit())
 	pause_restart_button.pressed.connect(func() -> void: restart_requested.emit())
-	quit_button.pressed.connect(func() -> void: quit_requested.emit())
+	%PauseRestartMissionButton.pressed.connect(func() -> void: %RestartMissionConfirmation.popup_centered())
+	quit_button.pressed.connect(func() -> void: %QuitConfirmation.popup_centered())
 	death_restart_button.pressed.connect(func() -> void: restart_requested.emit())
+	%DeathRestartMissionButton.pressed.connect(func() -> void: restart_mission_requested.emit())
+	%DeathQuitButton.pressed.connect(func() -> void: quit_requested.emit())
+	%RestartMissionConfirmation.confirmed.connect(func() -> void: restart_mission_requested.emit())
+	%QuitConfirmation.confirmed.connect(func() -> void: quit_requested.emit())
+	%BuildLabel.text = GameVersion.display_string()
 	pause_overlay.hide()
 	death_overlay.hide()
 	reload_label.hide()
@@ -56,9 +65,11 @@ func _on_weapon_changed(weapon: Weapon, slot: int) -> void:
 	_on_ammo_changed(_weapon.current_magazine, _weapon.reserve_ammo)
 
 
-func show_pause(visible: bool) -> void:
+func show_pause(visible: bool, reason := "PAUSED", context := "") -> void:
 	pause_overlay.visible = visible
 	if visible:
+		pause_title.text = reason
+		pause_context.text = context
 		resume_button.grab_focus()
 
 
