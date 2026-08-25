@@ -19,12 +19,13 @@ static func cone(width: int = 192, height: int = 112) -> ImageTexture:
 	var safe_width := maxi(16, width)
 	var safe_height := maxi(16, height)
 	var image := Image.create(safe_width, safe_height, false, Image.FORMAT_RGBA8)
-	var origin := Vector2(4.0, float(safe_height) * 0.5)
+	var origin := Vector2(float(safe_width) * 0.5, float(safe_height) * 0.5)
+	var beam_length := float(safe_width) * 0.5
 	var maximum_angle := deg_to_rad(32.0)
 	for y in safe_height:
 		for x in safe_width:
 			var offset := Vector2(x, y) - origin
-			var distance_ratio := offset.length() / float(safe_width)
+			var distance_ratio := offset.length() / beam_length
 			var angle := absf(offset.angle())
 			var angle_fade := clampf(1.0 - (angle / maximum_angle), 0.0, 1.0)
 			var distance_fade := pow(maxf(0.0, 1.0 - distance_ratio), 1.3)
