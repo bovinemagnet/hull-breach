@@ -1,12 +1,17 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://features/player/player_config.tres" id="2_config"]
 [ext_resource type="Script" path="res://features/combat/damage/health_component.gd" id="3_health"]
 [ext_resource type="PackedScene" path="res://features/weapons/pulse_rifle/pulse_rifle.tscn" id="4_rifle"]
+[ext_resource type="Script" path="res://features/interaction/interaction_detector.gd" id="5_interaction"]
+[ext_resource type="Script" path="res://features/access/access_inventory.gd" id="6_access"]
 
 [sub_resource type="CircleShape2D" id="CircleShape_player"]
 radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape_interaction"]
+radius = 56.0
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -22,6 +27,13 @@ shape = SubResource("CircleShape_player")
 [node name="PulseRifle" parent="WeaponPivot" instance=ExtResource("4_rifle")]
 position = Vector2(8, 0)
 
+[node name="Flashlight" type="PointLight2D" parent="WeaponPivot"]
+position = Vector2(4, 0)
+color = Color(0.72, 0.88, 1, 1)
+energy = 0.72
+texture_scale = 2.6
+shadow_enabled = true
+
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("3_health")
 maximum_health = 100.0
@@ -29,3 +41,14 @@ maximum_health = 100.0
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
+
+[node name="InteractionDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 64
+script = ExtResource("5_interaction")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector"]
+shape = SubResource("CircleShape_interaction")
+
+[node name="AccessInventory" type="Node" parent="."]
+script = ExtResource("6_access")

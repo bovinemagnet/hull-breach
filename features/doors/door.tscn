@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/doors/door.gd" id="1_door"]
+[ext_resource type="Script" path="res://features/doors/door_definition.gd" id="2_definition"]
+
+[sub_resource type="Resource" id="Resource_default_door"]
+script = ExtResource("2_definition")
+
+[node name="Door" type="Area2D"]
+script = ExtResource("1_door")
+definition = SubResource("Resource_default_door")
+
+[node name="InteractionShape" type="CollisionShape2D" parent="."]
+
+[node name="BlockingBody" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BlockingBody"]

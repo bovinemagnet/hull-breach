@@ -13,3 +13,6 @@ attack_range = 30.0
 attack_cooldown = 0.8
 detection_range = 700.0
 attack_windup = 0.18
+vision_range = 380.0
+search_duration = 3.2
+hearing_sensitivity = 1.0

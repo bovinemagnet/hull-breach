@@ -6,8 +6,8 @@ config_version=5
 [application]
 
 config/name="Hull Breach"
-config/version="0.1.0"
-run/main_scene="res://levels/dev/combat_sandbox/combat_sandbox.tscn"
+config/version="0.2.0"
+run/main_scene="res://levels/campaign/station_blackout/station_blackout.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.2.0 - 2026-08-25
+
+### Added
+
+- Complete Station Blackout vertical-slice mission with seven sequential objectives.
+- Reusable interactions, powered/access-controlled doors, terminals, credentials, and checkpoints.
+- Facility power transformation, emergency lighting, flashlight, environmental ambience, and pickups.
+- Configurable noise propagation plus Drone hearing, investigation, search, vision, and navigation.
+- Mission HUD, extraction flow, debug tools, and landscape twin-stick Android controls.
+
 ## 0.1.0 - 2026-08-25
 
 ### Added

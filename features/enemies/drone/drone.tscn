@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://features/enemies/drone/drone.gd" id="1_drone"]
 [ext_resource type="Resource" path="res://features/enemies/drone/drone.tres" id="2_definition"]
 [ext_resource type="Script" path="res://features/combat/damage/health_component.gd" id="3_health"]
+[ext_resource type="Script" path="res://features/noise/noise_listener.gd" id="4_listener"]
 
 [sub_resource type="CircleShape2D" id="CircleShape_drone"]
 radius = 12.0
@@ -19,3 +20,13 @@ shape = SubResource("CircleShape_drone")
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("3_health")
 maximum_health = 50.0
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 10.0
+target_desired_distance = 20.0
+avoidance_enabled = false
+radius = 13.0
+neighbor_distance = 80.0
+
+[node name="NoiseListener" type="Node" parent="."]
+script = ExtResource("4_listener")

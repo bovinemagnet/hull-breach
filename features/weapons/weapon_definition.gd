@@ -13,6 +13,7 @@ extends Resource
 @export_range(0.0, 45.0, 0.1) var spread_degrees: float = 0.0
 @export_range(0, 32, 1) var projectiles_per_shot: int = 1
 @export var automatic: bool = true
+@export_range(0.0, 5000.0, 1.0) var noise_radius: float = 320.0
 
 
 func validation_errors() -> PackedStringArray:
@@ -33,6 +34,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("projectile_lifetime must be greater than zero")
 	if projectiles_per_shot < 1:
 		errors.append("projectiles_per_shot must be at least one")
+	if noise_radius < 0.0:
+		errors.append("noise_radius cannot be negative")
 	return errors
 
 

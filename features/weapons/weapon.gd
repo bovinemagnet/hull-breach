@@ -6,6 +6,7 @@ signal fired
 signal dry_fired
 signal reload_started
 signal reload_finished
+signal noise_requested(event: NoiseEvent)
 
 @export var definition: WeaponDefinition
 @export var projectile_scene: PackedScene
@@ -81,6 +82,8 @@ func try_fire(aim_direction: Vector2, wielder: Node = null) -> bool:
 		_shot_audio.pitch_scale = randf_range(0.96, 1.04)
 		_shot_audio.play()
 	fired.emit()
+	if definition.noise_radius > 0.0:
+		noise_requested.emit(NoiseEvent.new(global_position, definition.noise_radius, &"weapon", wielder))
 	ammo_changed.emit(current_magazine, reserve_ammo)
 	queue_redraw()
 	return true
@@ -166,6 +169,13 @@ func _build_audio() -> void:
 	_dry_audio.bus = &"SFX"
 	_dry_audio.stream = ToneFactory.create_tone(85.0, 0.04, 0.12)
 	add_child(_dry_audio)
+
+
+func _exit_tree() -> void:
+	for audio in [_shot_audio, _reload_audio, _dry_audio]:
+		if is_instance_valid(audio):
+			audio.stop()
+			audio.stream = null
 
 
 func _draw() -> void:

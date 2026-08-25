@@ -16,3 +16,4 @@ projectile_lifetime = 1.5
 spread_degrees = 2.0
 projectiles_per_shot = 1
 automatic = true
+noise_radius = 340.0

@@ -10,11 +10,17 @@ signal invulnerability_changed(enabled: bool)
 @onready var weapon_pivot: Node2D = $WeaponPivot
 @onready var weapon: Weapon = $WeaponPivot/PulseRifle
 @onready var camera: Camera2D = $Camera2D
+@onready var interaction_detector: InteractionDetector = $InteractionDetector
+@onready var access_inventory: AccessInventory = $AccessInventory
+@onready var flashlight: PointLight2D = $WeaponPivot/Flashlight
 
 var aim_direction := Vector2.RIGHT
 var input_enabled := true
 var invulnerable := false
 var _controller_aim_active := false
+var _mobile_move := Vector2.ZERO
+var _mobile_aim := Vector2.ZERO
+var _mobile_firing := false
 var _damage_flash_remaining := 0.0
 var _movement_phase := 0.0
 var _damage_audio: AudioStreamPlayer2D
@@ -29,6 +35,7 @@ func _ready() -> void:
 	health_component.damage_received.connect(_on_damage_received)
 	health_component.died.connect(_on_died)
 	_build_audio()
+	flashlight.texture = LightTextureFactory.cone()
 	queue_redraw()
 
 
@@ -47,6 +54,8 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var move_input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+	if _mobile_move.length() > move_input.length():
+		move_input = _mobile_move
 	if move_input.length() < config.controller_move_deadzone:
 		move_input = Vector2.ZERO
 	var target_velocity := move_input * config.move_speed
@@ -62,7 +71,7 @@ func _process(delta: float) -> void:
 	_damage_flash_remaining = maxf(0.0, _damage_flash_remaining - delta)
 	if input_enabled:
 		_update_aim()
-		var wants_fire := Input.is_action_pressed(&"fire") if weapon.definition.automatic else Input.is_action_just_pressed(&"fire")
+		var wants_fire := (Input.is_action_pressed(&"fire") or _mobile_firing) if weapon.definition.automatic else Input.is_action_just_pressed(&"fire")
 		if wants_fire:
 			weapon.try_fire(aim_direction, self)
 		if Input.is_action_just_pressed(&"reload"):
@@ -97,7 +106,33 @@ func is_using_controller_aim() -> bool:
 	return _controller_aim_active
 
 
+func set_mobile_move(value: Vector2) -> void:
+	_mobile_move = value.limit_length(1.0)
+
+
+func set_mobile_aim(value: Vector2) -> void:
+	_mobile_aim = value.limit_length(1.0)
+	if _mobile_aim.length() >= config.controller_aim_deadzone:
+		aim_direction = _mobile_aim.normalized()
+		_controller_aim_active = true
+
+
+func set_mobile_firing(enabled: bool) -> void:
+	_mobile_firing = enabled
+
+
+func mobile_interact() -> void:
+	interaction_detector.interact_current()
+
+
+func mobile_reload() -> void:
+	weapon.start_reload()
+
+
 func _update_aim() -> void:
+	if _mobile_aim.length() >= config.controller_aim_deadzone:
+		aim_direction = _mobile_aim.normalized()
+		return
 	var controller_aim := Input.get_vector(&"aim_left", &"aim_right", &"aim_up", &"aim_down")
 	if controller_aim.length() >= config.controller_aim_deadzone:
 		aim_direction = controller_aim.normalized()
@@ -134,6 +169,13 @@ func _build_audio() -> void:
 	_death_audio.bus = &"SFX"
 	_death_audio.stream = ToneFactory.create_tone(52.0, 0.38, 0.24)
 	add_child(_death_audio)
+
+
+func _exit_tree() -> void:
+	for audio in [_damage_audio, _death_audio]:
+		if is_instance_valid(audio):
+			audio.stop()
+			audio.stream = null
 
 
 func _draw() -> void:

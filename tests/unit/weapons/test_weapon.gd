@@ -70,3 +70,13 @@ func test_reload_does_not_make_reserve_negative() -> void:
 func test_full_magazine_does_not_reload() -> void:
 	var weapon := _new_weapon()
 	assert_bool(weapon.start_reload()).is_false()
+
+
+func test_fire_emits_configured_noise_event() -> void:
+	var weapon := _new_weapon()
+	var events: Array[NoiseEvent] = []
+	weapon.noise_requested.connect(func(event: NoiseEvent) -> void: events.append(event))
+	weapon.try_fire(Vector2.RIGHT)
+	assert_int(events.size()).is_equal(1)
+	assert_float(events[0].radius).is_equal(weapon.definition.noise_radius)
+	assert_str(String(events[0].category)).is_equal("weapon")
