@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/weapons/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"incinerator"
+display_name = "IF-9 Incinerator"
+damage = 9.0
+rounds_per_second = 8.0
+magazine_size = 48
+reserve_ammo = 144
+reload_duration = 2.6
+projectile_speed = 330.0
+projectile_lifetime = 0.42
+spread_degrees = 8.0
+projectiles_per_shot = 2
+automatic = true
+noise_radius = 610.0
+fire_mode = 1
+ammo_type = &"fuel"
+preferred_slot = 4
+recoil = 1.2

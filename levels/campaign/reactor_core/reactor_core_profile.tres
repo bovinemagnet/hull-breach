@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CampaignMissionProfile" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/campaign/campaign_mission_profile.gd" id="1"]
+[ext_resource type="Resource" path="res://levels/campaign/reactor_core/reactor_core_mission.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+mission_id = &"reactor_core"
+campaign_index = 6
+mission_definition = ExtResource("2")
+theme_name = "Reactor Core"
+ambience_cue = "reactor rumble and pressure alarms"
+briefing = "Stabilise the reactor. Local failures open a hazardous emergency route."
+floor_colour = Color(0.035, 0.055, 0.07, 1)
+accent_colour = Color(0.18, 0.72, 1, 1)
+objective_positions = PackedVector2Array(140, 450, 310, 180, 560, 450, 700, 750, 940, 450, 1380, 450)
+checkpoint_objectives = PackedInt32Array(1, 3, 4)
+enemy_scene_paths = PackedStringArray("res://features/enemies/spitter/spitter.tscn", "res://features/enemies/swarm/swarm.tscn", "res://features/enemies/hunter/hunter.tscn")
+enemies_per_beat = PackedInt32Array(2, 6, 4)
+weapon_unlocks = PackedStringArray("1:incinerator")
+timed_objective_index = 2
+timed_objective_seconds = 90.0

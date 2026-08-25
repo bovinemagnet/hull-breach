@@ -17,6 +17,7 @@ Before submitting a pull request, run `./tools/validate.sh` and `./tools/test.sh
 ```bash
 ./tools/profile-station-blackout.sh
 ./tools/profile-phase3.sh
+./tools/profile-campaign.sh
 ```
 
-The Phase 3 stress profile covers 50 mixed enemies and 100 projectiles. CI repeats validation and tests before producing the debug build. There is no percentage coverage gate; new systems and bug fixes require focused regression tests.
+The Phase 3 stress profile covers 50 mixed enemies and 100 projectiles. The campaign profile loads all eight missions and reports each average against the 16.67 ms frame budget. CI repeats validation and tests before producing the debug build. There is no percentage coverage gate; new systems and bug fixes require focused regression tests.

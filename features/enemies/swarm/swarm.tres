@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/common/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"swarm"
+display_name = "Swarm Crawler"
+combat_role = &"crowd"
+body_colour = Color(0.68, 0.86, 0.22, 1)
+maximum_health = 12.0
+move_speed = 155.0
+attack_damage = 4.0
+attack_range = 19.0
+attack_cooldown = 0.72
+detection_range = 900.0
+attack_windup = 0.08
+vision_range = 280.0
+hearing_sensitivity = 2.2
+knockback_resistance = 0.05

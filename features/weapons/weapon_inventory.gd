@@ -9,9 +9,11 @@ const WEAPON_CATALOG := {
 	&"sidearm": "res://features/weapons/sidearm/sidearm.tscn",
 	&"hb4_pulse_rifle": "res://features/weapons/pulse_rifle/pulse_rifle.tscn",
 	&"shotgun": "res://features/weapons/shotgun/shotgun.tscn",
+	&"plasma_cutter": "res://features/weapons/plasma_cutter/plasma_cutter.tscn",
+	&"incinerator": "res://features/weapons/incinerator/incinerator.tscn",
 }
 
-@export_range(1, 3, 1) var maximum_slots := 3
+@export_range(1, 5, 1) var maximum_slots := 5
 @export var weapon_container_path := NodePath("../WeaponPivot")
 @export var starting_weapon_id: StringName = &"hb4_pulse_rifle"
 

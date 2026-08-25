@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"evacuation"
+display_name = "Evacuation"
+description = "Initiate destruction and reach the evacuation shuttle."
+objective_ids = PackedStringArray("order", "command", "destruction", "lockdown", "shuttle_bay", "extract")
+objective_titles = PackedStringArray("Answer Evacuation Order", "Reach Command", "Initiate Destruction", "Cross Lockdown", "Reach the Shuttle Bay", "Evacuate")
+objective_details = PackedStringArray("Move before the network collapses.", "Reach the command uplink.", "Arm the facility destruction protocol.", "Use emergency routes through the failing sectors.", "Break through the final enemy line.", "Board the last shuttle.")
+objective_events = PackedStringArray("evacuation_started", "command_reached", "destruction_armed", "lockdown_crossed", "shuttle_reached", "campaign_extracted")
+objective_kinds = PackedInt32Array(0, 0, 1, 0, 0, 3)

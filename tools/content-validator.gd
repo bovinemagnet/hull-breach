@@ -3,8 +3,7 @@ extends SceneTree
 const ROOTS := ["res://features", "res://resources", "res://levels/campaign"]
 const REQUIRED_SCENES := [
 	"res://ui/menus/main_menu.tscn",
-	"res://levels/campaign/station_blackout/station_blackout.tscn",
-	"res://levels/campaign/medical_wing/medical_wing.tscn",
+	"res://ui/credits/credits.tscn",
 	"res://levels/templates/production_level_template.tscn",
 ]
 
@@ -13,9 +12,12 @@ var _ids: Dictionary = {}
 
 
 func _initialize() -> void:
-	for path in REQUIRED_SCENES:
+	var required_scenes := REQUIRED_SCENES.duplicate()
+	required_scenes.append_array(CampaignCatalog.MISSION_SCENES.values())
+	for path in required_scenes:
 		if not ResourceLoader.exists(path) or ResourceLoader.load(path) == null:
 			_errors.append("Missing or invalid scene: %s" % path)
+	_validate_campaign_catalog()
 	for root_path in ROOTS:
 		_scan_directory(root_path)
 	if ProjectSettings.get_setting("application/config/version", "") != GameVersion.as_string():
@@ -55,8 +57,12 @@ func _validate_resource(path: String) -> void:
 	if validation_method != null and resource.has_method("validation_errors"):
 		for error in resource.call("validation_errors"):
 			_errors.append("%s: %s" % [path, error])
-	elif resource is MissionDefinition and not (resource as MissionDefinition).is_valid():
-		_errors.append("Invalid mission definition: %s" % path)
+	elif resource is MissionDefinition:
+		for error in (resource as MissionDefinition).validation_errors():
+			_errors.append("%s: %s" % [path, error])
+	elif resource is CampaignMissionProfile:
+		for error in (resource as CampaignMissionProfile).validation_errors():
+			_errors.append("%s: %s" % [path, error])
 	if resource is WeaponDefinition or resource is EnemyDefinition or resource is ItemDefinition or resource is DifficultyDefinition or resource is MissionDefinition:
 		var id: StringName = resource.get("id")
 		var content_type := resource.get_class()
@@ -67,3 +73,15 @@ func _validate_resource(path: String) -> void:
 			_errors.append("Duplicate content ID %s in %s and %s" % [key, _ids[key], path])
 		else:
 			_ids[key] = path
+
+
+func _validate_campaign_catalog() -> void:
+	if CampaignCatalog.MISSION_IDS.size() != 8:
+		_errors.append("Campaign must contain exactly eight missions")
+	var seen := {}
+	for mission_id in CampaignCatalog.MISSION_IDS:
+		if seen.has(mission_id):
+			_errors.append("Duplicate campaign mission ID: %s" % mission_id)
+		seen[mission_id] = true
+		if CampaignCatalog.scene_for(mission_id).is_empty():
+			_errors.append("Campaign mission has no scene: %s" % mission_id)

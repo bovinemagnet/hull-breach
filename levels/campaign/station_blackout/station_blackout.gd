@@ -482,7 +482,7 @@ func _continue_campaign() -> void:
 	get_tree().paused = false
 	CheckpointManager.clear_pending()
 	if _session() != null:
-		_session().transition_to_mission(&"medical_wing")
+		_session().transition_to_next_mission(&"station_blackout")
 	else:
 		get_tree().change_scene_to_file("res://levels/campaign/medical_wing/medical_wing.tscn")
 

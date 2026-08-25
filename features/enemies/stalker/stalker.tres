@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/common/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"stalker"
+display_name = "Stalker"
+combat_role = &"ambush"
+body_colour = Color(0.35, 0.18, 0.52, 1)
+maximum_health = 72.0
+move_speed = 132.0
+attack_damage = 24.0
+attack_range = 28.0
+attack_cooldown = 1.25
+detection_range = 720.0
+attack_windup = 0.3
+vision_range = 430.0
+hearing_sensitivity = 1.4
+knockback_resistance = 0.25

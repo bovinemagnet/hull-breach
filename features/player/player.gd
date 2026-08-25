@@ -82,7 +82,7 @@ func _process(delta: float) -> void:
 			weapon_inventory.cycle(1)
 		elif Input.is_action_just_pressed(&"weapon_previous"):
 			weapon_inventory.cycle(-1)
-		for slot in mini(weapon_inventory.weapons.size(), 3):
+		for slot in mini(weapon_inventory.weapons.size(), 5):
 			if Input.is_action_just_pressed(StringName("weapon_%d" % (slot + 1))):
 				weapon_inventory.select_slot(slot)
 		var wants_fire := (Input.is_action_pressed(&"fire") or _mobile_firing) if weapon.definition.is_automatic() else Input.is_action_just_pressed(&"fire")

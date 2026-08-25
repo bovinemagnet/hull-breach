@@ -66,6 +66,8 @@ func _ready() -> void:
 			_restore_checkpoint(CheckpointState.from_dictionary(persisted))
 			restored = true
 	if not restored:
+		if _session() != null and not _session().campaign_loadout().is_empty():
+			player.weapon_inventory.restore(_session().campaign_loadout())
 		_save_checkpoint(&"mission_start")
 	mission_hud.notify("MEDICAL WING — QUARANTINE FAILURE", 3.0)
 	queue_redraw()
@@ -245,7 +247,7 @@ func _connect_systems() -> void:
 	combat_hud.resume_requested.connect(func() -> void: _set_paused(false))
 	combat_hud.restart_requested.connect(_restart_checkpoint)
 	combat_hud.quit_requested.connect(_return_to_menu)
-	mission_hud.replay_requested.connect(_return_to_menu)
+	mission_hud.replay_requested.connect(_continue_campaign)
 	mission_hud.quit_requested.connect(_return_to_menu)
 	mobile_controls.pause_requested.connect(func() -> void: _set_paused(not get_tree().paused))
 	var objective := mission.get_active_objective()
@@ -331,7 +333,7 @@ func _on_mission_completed() -> void:
 	result.completed = true
 	if _session() != null:
 		_session().complete_mission(result)
-	mission_hud.show_complete("MEDICAL WING COMPLETE", "Containment archive recovered. Further sectors unlock in Phase 4.", "Return to Main Menu")
+	mission_hud.show_complete("MEDICAL WING COMPLETE", "Containment archive recovered. Cargo Deck unlocked.", "Continue to Cargo Deck")
 
 
 func _on_player_died() -> void:
@@ -357,6 +359,15 @@ func _return_to_menu() -> void:
 		_session().transition_to_scene("res://ui/menus/main_menu.tscn")
 	else:
 		get_tree().change_scene_to_file("res://ui/menus/main_menu.tscn")
+
+
+func _continue_campaign() -> void:
+	get_tree().paused = false
+	CheckpointManager.clear_pending()
+	if _session() != null:
+		_session().transition_to_next_mission(&"medical_wing")
+	else:
+		get_tree().change_scene_to_file("res://levels/campaign/cargo_deck/cargo_deck.tscn")
 
 
 func _session() -> GameSessionState:

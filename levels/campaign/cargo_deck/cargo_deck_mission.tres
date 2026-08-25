@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cargo_deck"
+display_name = "Cargo Deck"
+description = "Recover the contaminated cargo manifest and survive the loading-bay breach."
+objective_ids = PackedStringArray("arrival", "local_control", "cargo_sections", "container", "manifest", "extract")
+objective_titles = PackedStringArray("Reach Cargo Control", "Restore Local Control", "Open Cargo Sections", "Inspect the Container", "Secure the Manifest", "Reach Extraction")
+objective_details = PackedStringArray("Cross the loading apron.", "Bring the handling console online.", "Route around the moving cargo lanes.", "Investigate the quarantined shipment.", "Recover the contaminated manifest.", "Escape the incoming Swarm.")
+objective_events = PackedStringArray("cargo_arrival", "control_restored", "sections_open", "container_found", "manifest_secured", "cargo_extracted")
+objective_kinds = PackedInt32Array(0, 1, 1, 0, 2, 3)

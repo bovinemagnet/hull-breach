@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"reactor_core"
+display_name = "Reactor Core"
+description = "Stabilise the reactor before containment failure."
+objective_ids = PackedStringArray("critical", "coolant", "relief", "control_rods", "stabilise", "extract")
+objective_titles = PackedStringArray("Reach Reactor Control", "Restore Coolant", "Open the Relief Valve", "Activate Control Rods", "Final Stabilisation", "Reach Extraction")
+objective_details = PackedStringArray("Enter the critical reactor wing.", "Start the emergency coolant pump.", "Reach the relief valve before pressure peaks.", "Lower the control rods.", "Hold the stabilisation sequence together.", "Leave through the service lock.")
+objective_events = PackedStringArray("reactor_entered", "coolant_started", "relief_opened", "rods_activated", "reactor_stable", "reactor_extracted")
+objective_kinds = PackedInt32Array(0, 1, 4, 1, 1, 3)
+objective_time_limits = PackedFloat32Array(0, 0, 90, 0, 0, 0)

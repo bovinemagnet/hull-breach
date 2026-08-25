@@ -4,11 +4,6 @@ extends Node
 signal campaign_changed
 signal transition_started(scene_path: String)
 
-const MISSION_SCENES := {
-	&"station_blackout": "res://levels/campaign/station_blackout/station_blackout.tscn",
-	&"medical_wing": "res://levels/campaign/medical_wing/medical_wing.tscn",
-}
-
 var save_data: Dictionary = {}
 var difficulty_id: StringName = &"standard"
 var difficulty: DifficultyDefinition
@@ -51,6 +46,8 @@ func continue_campaign() -> bool:
 func save_checkpoint(mission_id: StringName, checkpoint: Dictionary) -> bool:
 	save_data.active_mission = {"id": String(mission_id), "checkpoint": checkpoint.duplicate(true)}
 	save_data.campaign.current_mission = String(mission_id)
+	if checkpoint.has("weapon_states"):
+		save_data.campaign.loadout = checkpoint.weapon_states.duplicate(true)
 	return _save_service().save(save_data) if _save_service() != null else false
 
 
@@ -61,6 +58,14 @@ func checkpoint_for(mission_id: StringName) -> Dictionary:
 	return active.get("checkpoint", {}).duplicate(true)
 
 
+func campaign_loadout() -> Dictionary:
+	return save_data.get("campaign", {}).get("loadout", {}).duplicate(true)
+
+
+func save_loadout(loadout: Dictionary) -> void:
+	save_data.campaign.loadout = loadout.duplicate(true)
+
+
 func complete_mission(result: MissionResult) -> void:
 	var completed: Array = save_data.campaign.get("completed_missions", [])
 	var mission_text := String(result.mission_id)
@@ -69,18 +74,54 @@ func complete_mission(result: MissionResult) -> void:
 	save_data.campaign.completed_missions = completed
 	save_data.campaign.last_result = result.to_dictionary()
 	save_data.active_mission = {}
-	if result.mission_id == &"station_blackout":
-		save_data.campaign.current_mission = "medical_wing"
+	var next_id := CampaignCatalog.next_after(result.mission_id)
+	if next_id.is_empty():
+		save_data.campaign.current_mission = String(result.mission_id)
+		save_data.campaign.campaign_complete = true
 	else:
-		save_data.campaign.current_mission = "medical_wing"
+		save_data.campaign.current_mission = String(next_id)
 	if _save_service() != null:
 		_save_service().save(save_data)
 	campaign_changed.emit()
 
 
 func transition_to_mission(mission_id: StringName) -> void:
-	var path: String = MISSION_SCENES.get(mission_id, MISSION_SCENES[&"station_blackout"])
+	var path := CampaignCatalog.scene_for(mission_id)
+	if path.is_empty():
+		push_error("Unknown campaign mission: %s" % mission_id)
+		return
 	transition_to_scene(path)
+
+
+func transition_to_next_mission(completed_mission_id: StringName) -> void:
+	var next_id := CampaignCatalog.next_after(completed_mission_id)
+	if next_id.is_empty():
+		transition_to_scene("res://ui/credits/credits.tscn")
+	else:
+		transition_to_mission(next_id)
+
+
+func unlocked_missions() -> Array[StringName]:
+	var completed: Array = save_data.get("campaign", {}).get("completed_missions", [])
+	return CampaignCatalog.unlocked_from(completed)
+
+
+func is_mission_unlocked(mission_id: StringName) -> bool:
+	return unlocked_missions().has(mission_id)
+
+
+func unlock_mission(mission_id: StringName) -> bool:
+	if not CampaignCatalog.is_valid_mission(mission_id):
+		return false
+	var index := CampaignCatalog.MISSION_IDS.find(mission_id)
+	var completed: Array = save_data.campaign.get("completed_missions", [])
+	for previous_index in index:
+		var previous := String(CampaignCatalog.MISSION_IDS[previous_index])
+		if not completed.has(previous):
+			completed.append(previous)
+	save_data.campaign.completed_missions = completed
+	save_data.campaign.current_mission = String(mission_id)
+	return _save_service().save(save_data) if _save_service() != null else true
 
 
 func transition_to_scene(scene_path: String) -> void:
@@ -122,6 +163,6 @@ func _fallback_data(selected_difficulty: StringName = &"standard") -> Dictionary
 		"schema_version": SaveMigration.CURRENT_SCHEMA_VERSION,
 		"game_version": GameVersion.as_string(),
 		"profile": {"difficulty": String(selected_difficulty)},
-		"campaign": {"completed_missions": [], "current_mission": "station_blackout"},
+		"campaign": {"completed_missions": [], "current_mission": "station_blackout", "campaign_complete": false, "loadout": {}},
 		"active_mission": {},
 	}

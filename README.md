@@ -1,6 +1,6 @@
 # Hull Breach
 
-Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. Version 0.3.0 includes the Station Blackout and Medical Wing campaign missions, three enemy archetypes, three weapons, hazards, difficulty profiles, and persistent campaign progress.
+Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. Version 0.5.0 Alpha includes an eight-mission campaign, seven enemy archetypes, five weapons, hazards, difficulty profiles, persistent checkpoints, an ending, and credits.
 
 ## Development Requirements
 
@@ -20,7 +20,7 @@ cd hull-breach
 godot --editor --path .
 ```
 
-Press F6 or F5 to open the main menu, then start or continue the campaign. `levels/campaign/station_blackout/` and `levels/campaign/medical_wing/` can also be run directly for development. The combat sandbox remains available at `levels/dev/combat_sandbox/combat_sandbox.tscn`.
+Press F6 or F5 to open the main menu, then start or continue the campaign. Development builds expose all eight missions through Mission Select. Individual scenes under `levels/campaign/` can also run directly; the combat sandbox remains at `levels/dev/combat_sandbox/combat_sandbox.tscn`.
 
 ## Running Tests and Validation
 
@@ -29,9 +29,10 @@ Press F6 or F5 to open the main menu, then start or continue the campaign. `leve
 ./tools/test.sh
 ./tools/profile-combat.sh
 ./tools/profile-phase3.sh
+./tools/profile-campaign.sh
 ```
 
-Validation performs a clean import plus content-ID, definition, mission-scene, and version checks. Tests use GdUnit4 v6.2.0. The Phase 3 profile exercises 50 mixed enemies and 100 projectiles. See [testing instructions](docs/development/testing.md) for details.
+Validation performs a clean import plus content-ID, definition, eight-mission scene, and version checks. Tests use GdUnit4 v6.2.0. The campaign profiler records every mission against the 16.67 ms frame budget. See [testing instructions](docs/development/testing.md) for details.
 
 ## Creating a Debug Build
 

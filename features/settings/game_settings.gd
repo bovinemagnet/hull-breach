@@ -13,6 +13,7 @@ var controller_sensitivity := 1.0
 var controller_deadzone := 0.2
 var mobile_stick_size := 1.0
 var mobile_stick_opacity := 0.72
+var touch_sensitivity := 1.0
 var screen_shake_intensity := 1.0
 var flash_intensity := 1.0
 var aim_assist_strength := 0.0
@@ -35,6 +36,7 @@ func to_dictionary() -> Dictionary:
 			"controller_deadzone": controller_deadzone,
 			"mobile_stick_size": mobile_stick_size,
 			"mobile_stick_opacity": mobile_stick_opacity,
+			"touch_sensitivity": touch_sensitivity,
 		},
 		"accessibility": {
 			"screen_shake": screen_shake_intensity,
@@ -62,6 +64,7 @@ static func from_dictionary(data: Dictionary) -> GameSettings:
 	settings.controller_deadzone = clampf(float(controls.get("controller_deadzone", 0.2)), 0.0, 0.9)
 	settings.mobile_stick_size = clampf(float(controls.get("mobile_stick_size", 1.0)), 0.7, 1.5)
 	settings.mobile_stick_opacity = _unit(controls.get("mobile_stick_opacity", 0.72))
+	settings.touch_sensitivity = clampf(float(controls.get("touch_sensitivity", 1.0)), 0.25, 2.0)
 	var accessibility: Dictionary = data.get("accessibility", {})
 	settings.screen_shake_intensity = _unit(accessibility.get("screen_shake", 1.0))
 	settings.flash_intensity = _unit(accessibility.get("flash_intensity", 1.0))

@@ -22,6 +22,7 @@ func test_schema_zero_migrates_to_current() -> void:
 	assert_int(migrated.schema_version).is_equal(SaveMigration.CURRENT_SCHEMA_VERSION)
 	assert_str(migrated.profile.difficulty).is_equal("standard")
 	assert_str(migrated.campaign.current_mission).is_equal("station_blackout")
+	assert_bool(migrated.campaign.campaign_complete).is_false()
 
 
 func test_future_schema_is_rejected() -> void:

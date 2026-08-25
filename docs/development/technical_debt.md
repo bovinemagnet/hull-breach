@@ -14,7 +14,7 @@ This register records deliberate constraints discovered while reviewing the Phas
 - **Description:** Lights, tiles, enemy shapes, and audio use generated placeholder resources.
 - **Impact:** Presentation cannot reach shipping quality without an asset replacement pass.
 - **Priority:** Medium
-- **Resolution:** Phase 4 art/audio production. Runtime placeholders remain intentionally replaceable.
+- **Resolution:** Phase 4 classifies these assets explicitly as Alpha placeholders; replace them during the Beta presentation pass without changing content IDs.
 
 ## TD-003 — Checkpoints omit live enemy transforms
 
@@ -28,7 +28,7 @@ This register records deliberate constraints discovered while reviewing the Phas
 - **Description:** Touch controls and exports can be validated in software, but thermal behavior and safe areas require a device.
 - **Impact:** Mobile performance cannot be signed off in CI.
 - **Priority:** High
-- **Resolution:** Phase 3 real-device regression and blind playtest.
+- **Resolution:** Required manual Alpha gate; complete real-device Android/iOS, controller-first, and blind-playtest passes before declaring the milestone release-ready.
 
 ## TD-005 — Runtime level tiles are prototype authoring data
 

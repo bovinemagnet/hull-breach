@@ -18,7 +18,7 @@ enum FireMode { SEMI_AUTOMATIC, AUTOMATIC }
 @export_range(0.0, 5000.0, 1.0) var noise_radius: float = 320.0
 @export var fire_mode := FireMode.AUTOMATIC
 @export var ammo_type: StringName = &"energy"
-@export_range(0, 2, 1) var preferred_slot := 1
+@export_range(0, 4, 1) var preferred_slot := 1
 @export_range(0.0, 40.0, 0.1) var recoil := 1.0
 
 

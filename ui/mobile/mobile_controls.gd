@@ -40,5 +40,9 @@ func toggle_debug_visibility() -> void:
 
 func _on_aim_changed(value: Vector2) -> void:
 	if player != null:
-		player.set_mobile_aim(value)
+		var sensitivity := 1.0
+		var service: Node = get_node_or_null("/root/SettingsService")
+		if service != null and service.get("settings") is GameSettings:
+			sensitivity = (service.get("settings") as GameSettings).touch_sensitivity
+		player.set_mobile_aim(value * sensitivity)
 		player.set_mobile_firing(value.length() > 0.45)

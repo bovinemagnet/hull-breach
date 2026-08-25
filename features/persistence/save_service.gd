@@ -24,6 +24,8 @@ func default_data(difficulty_id: StringName = &"standard") -> Dictionary:
 		"campaign": {
 			"completed_missions": [],
 			"current_mission": "station_blackout",
+			"campaign_complete": false,
+			"loadout": {},
 		},
 		"active_mission": {},
 	}

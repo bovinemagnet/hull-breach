@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/weapons/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"plasma_cutter"
+display_name = "PC-4 Plasma Cutter"
+damage = 68.0
+rounds_per_second = 1.8
+magazine_size = 8
+reserve_ammo = 40
+reload_duration = 2.0
+projectile_speed = 820.0
+projectile_lifetime = 1.35
+spread_degrees = 0.4
+projectiles_per_shot = 1
+automatic = false
+noise_radius = 520.0
+fire_mode = 0
+ammo_type = &"plasma_cells"
+preferred_slot = 3
+recoil = 3.4

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.5.0 - 2026-08-25
+
+### Added
+
+- Complete eight-mission campaign progression from New Game through ending and credits.
+- Cargo Deck, Research Sector, Engineering Complex, Reactor Core, The Hive, and Evacuation missions.
+- Swarm, Stalker, Brute, and Brood Entity enemies plus light-aware ambush and armour roles.
+- Plasma Cutter and Incinerator weapons with five-slot persistent campaign loadouts.
+- Timed objective consequences, mission select, campaign validation, smoke tests, and profiling.
+
 ## 0.2.0 - 2026-08-25
 
 ### Added

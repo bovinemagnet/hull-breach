@@ -2,7 +2,7 @@ class_name GameVersion
 extends RefCounted
 
 const MAJOR := 0
-const MINOR := 3
+const MINOR := 5
 const PATCH := 0
 
 

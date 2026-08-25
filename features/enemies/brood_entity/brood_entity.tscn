@@ -1,0 +1,31 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://features/enemies/brood_entity/brood_entity.gd" id="1"]
+[ext_resource type="Resource" path="res://features/enemies/brood_entity/brood_entity.tres" id="2"]
+[ext_resource type="Script" path="res://features/combat/damage/health_component.gd" id="3"]
+[ext_resource type="Script" path="res://features/enemies/common/perception_component.gd" id="4"]
+[ext_resource type="Script" path="res://features/enemies/common/navigation_component.gd" id="5"]
+[ext_resource type="Script" path="res://features/enemies/common/melee_attack.gd" id="6"]
+
+[sub_resource type="CircleShape2D" id="shape"]
+radius = 28.0
+
+[node name="BroodEntity" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1")
+definition = ExtResource("2")
+perception_enabled = true
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("3")
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 16.0
+target_desired_distance = 42.0
+radius = 29.0
+script = ExtResource("5")
+[node name="Perception" type="Node" parent="."]
+script = ExtResource("4")
+[node name="MeleeAttack" type="Node" parent="."]
+script = ExtResource("6")
