@@ -41,7 +41,11 @@ func save_settings() -> bool:
 		return false
 	file.store_string(JSON.stringify(settings.to_dictionary(), "  "))
 	file.flush()
+	var write_error := file.get_error()
 	file.close()
+	if write_error != OK:
+		last_error = "Unable to write settings; storage may be full or unavailable"
+		return false
 	if _load_path(temporary_path).is_empty():
 		last_error = "Temporary settings verification failed"
 		return false

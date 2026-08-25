@@ -1,15 +1,16 @@
 # Third-Party Assets
 
-No third-party art or audio assets are included in the Beta. Visuals are original code-drawn prototypes; sound effects, ambience, and music cues are synthesized at runtime.
+No third-party art or audio assets are included in the Release Candidate. Visuals and the release icon are original; sound effects, ambience, and music cues are synthesized at runtime.
 
 ## Software Inventory
 
-| Component | Use | Licence | Shipping |
-| --- | --- | --- | --- |
-| Godot Engine 4.7.2 | Engine/runtime | MIT | Runtime notices in credits |
-| GdUnit4 6.2.0 | Automated tests | MIT | Development only; licence retained in addon |
+| Asset/component | Creator/source | Licence | Attribution/modification | Shipping path |
+| --- | --- | --- | --- | --- |
+| Godot Engine 4.7.2 | Godot Engine contributors, <https://godotengine.org/> | MIT | Full notice in `THIRD_PARTY_NOTICES.md`; engine linked/exported by Godot | Platform executable/app package |
+| GdUnit4 6.2.0 | Mike Schulze and contributors, <https://github.com/MikeSchulze/gdUnit4> | MIT | Development-only; unchanged license retained in addon | Excluded from production |
+| Hull Breach icon | Hull Breach contributors, this repository | Project MIT licence; original | Original SVG with generated 1024 px PNG | `assets/original/branding/` |
 
-This inventory was reviewed for 0.8.0 on 2026-08-25. No asset is marked `REPLACE`, and no unresolved attribution is known.
+This inventory was reviewed for 1.0.0-rc.1 on 2026-08-25. `assets/third_party/` is empty, no asset is marked `REPLACE`, and no unresolved attribution is known. See `docs/release/legal_audit.md` for the ship audit.
 
 Do not add an asset until its licence has been verified. Unknown licence means the asset must not be used.
 

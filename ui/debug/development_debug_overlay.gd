@@ -13,7 +13,10 @@ var visible_state := false
 func _ready() -> void:
 	layer = 90
 	visible = false
-	set_process(OS.is_debug_build())
+	if not OS.is_debug_build():
+		queue_free()
+		return
+	set_process(true)
 
 
 func bind(p_player: Player, p_mission: MissionController, p_power_grid: PowerGrid, p_checkpoints: CheckpointManager) -> void:

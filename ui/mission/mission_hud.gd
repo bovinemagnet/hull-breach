@@ -87,6 +87,9 @@ func set_power(main_powered: bool) -> void:
 
 
 func set_debug(visible: bool, text: String) -> void:
+	if not OS.is_debug_build():
+		debug_label.hide()
+		return
 	debug_label.visible = visible
 	debug_label.text = text
 

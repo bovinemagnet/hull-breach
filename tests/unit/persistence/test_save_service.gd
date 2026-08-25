@@ -38,6 +38,35 @@ func test_future_schema_is_rejected() -> void:
 	assert_dict(SaveMigration.migrate({"schema_version": 999})).is_empty()
 
 
+func test_beta_schema_three_save_loads_without_progress_loss() -> void:
+	var save_service := auto_free(SaveServiceNode.new()) as SaveServiceNode
+	save_service.configure_path(TEST_PATH)
+	save_service.clear()
+	var beta_save := {
+		"schema_version": 3,
+		"game_version": "0.8.0",
+		"profile": {"difficulty": "standard"},
+		"campaign": {
+			"completed_missions": ["station_blackout", "medical_wing"],
+			"current_mission": "cargo_deck",
+			"campaign_complete": false,
+			"loadout": {},
+		},
+		"active_mission": {},
+		"metadata": {},
+	}
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(beta_save))
+	file.close()
+	var restored := save_service.load()
+	assert_str(restored.game_version).is_equal("0.8.0")
+	assert_str(restored.campaign.current_mission).is_equal("cargo_deck")
+	assert_array(restored.campaign.completed_missions).contains_exactly(["station_blackout", "medical_wing"])
+	assert_bool(save_service.save(restored)).is_true()
+	assert_str(save_service.load().game_version).is_equal("1.0.0-rc.1")
+	save_service.clear()
+
+
 func test_corrupted_primary_recovers_previous_backup() -> void:
 	var service := auto_free(SaveServiceNode.new()) as SaveServiceNode
 	service.configure_path(TEST_PATH)
@@ -97,3 +126,10 @@ func test_invalid_campaign_structure_fails_before_write() -> void:
 	assert_str(service.last_error).contains("current campaign mission")
 	assert_bool(FileAccess.file_exists(TEST_PATH)).is_false()
 	service.clear()
+
+
+func test_unavailable_save_directory_fails_without_corrupting_existing_data() -> void:
+	var service := auto_free(SaveServiceNode.new()) as SaveServiceNode
+	service.configure_path("user://missing-release-test-directory/campaign.json")
+	assert_bool(service.save(service.default_data())).is_false()
+	assert_str(service.last_error).contains("temporary save file")

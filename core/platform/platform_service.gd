@@ -23,6 +23,7 @@ var lifecycle_paused := false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	print("Hull Breach | %s | Platform: %s" % [GameVersion.support_string(), OS.get_name()])
 
 
 func _input(event: InputEvent) -> void:

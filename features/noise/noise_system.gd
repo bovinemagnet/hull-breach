@@ -9,6 +9,11 @@ var _listeners: Array[WeakRef] = []
 var _debug_events: Array[Dictionary] = []
 
 
+func _ready() -> void:
+	if not OS.is_debug_build():
+		debug_visualization = false
+
+
 func register_listener(listener: NoiseListener) -> void:
 	for listener_ref in _listeners:
 		if listener_ref.get_ref() == listener:

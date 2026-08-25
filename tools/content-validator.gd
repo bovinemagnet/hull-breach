@@ -4,13 +4,21 @@ const ROOTS := ["res://features", "res://resources", "res://levels/campaign"]
 const REQUIRED_SCENES := [
 	"res://ui/menus/main_menu.tscn",
 	"res://ui/credits/credits.tscn",
+	"res://ui/legal/legal.tscn",
 	"res://levels/templates/production_level_template.tscn",
 ]
 const REQUIRED_RELEASE_FILES := [
 	"res://LICENSE",
 	"res://PRIVACY.md",
+	"res://THIRD_PARTY_NOTICES.md",
 	"res://THIRD_PARTY_ASSETS.md",
-	"res://docs/development/beta-hardening.md",
+	"res://docs/release/release_checklist.md",
+	"res://docs/release/platform_matrix.md",
+	"res://docs/release/store_metadata.md",
+	"res://docs/release/known_issues.md",
+	"res://docs/release/signing.md",
+	"res://docs/release/versioning.md",
+	"res://docs/release/launch_runbook.md",
 ]
 
 var _errors := PackedStringArray()
@@ -27,7 +35,7 @@ func _initialize() -> void:
 		if not FileAccess.file_exists(path):
 			_errors.append("Missing release document: %s" % path)
 	_validate_campaign_catalog()
-	_validate_beta_configuration()
+	_validate_release_configuration()
 	for root_path in ROOTS:
 		_scan_directory(root_path)
 	if ProjectSettings.get_setting("application/config/version", "") != GameVersion.as_string():
@@ -97,7 +105,14 @@ func _validate_campaign_catalog() -> void:
 			_errors.append("Campaign mission has no scene: %s" % mission_id)
 
 
-func _validate_beta_configuration() -> void:
+func _validate_release_configuration() -> void:
+	if ProjectSettings.get_setting("application/config/name", "") != "Hull Breach":
+		_errors.append("Production application name is not locked")
+	if not GameVersion.is_release_candidate():
+		_errors.append("GameVersion is not a release candidate")
+	var icon_path := String(ProjectSettings.get_setting("application/config/icon", ""))
+	if icon_path.is_empty() or not ResourceLoader.exists(icon_path):
+		_errors.append("Production application icon is missing")
 	for autoload_name in ["SaveService", "SettingsService", "GameSession", "MusicDirector", "PlatformService"]:
 		if not ProjectSettings.has_setting("autoload/%s" % autoload_name):
 			_errors.append("Missing required autoload: %s" % autoload_name)
@@ -112,3 +127,12 @@ func _validate_beta_configuration() -> void:
 	for platform_name in ["Linux", "Windows Desktop", "macOS", "Android", "iOS"]:
 		if not export_text.contains('name="%s"' % platform_name):
 			_errors.append("Missing export preset: %s" % platform_name)
+	if export_text.count('custom_features="production,release_candidate"') != 5:
+		_errors.append("Every export preset must use production release-candidate features")
+	if export_text.contains('custom_features="beta"'):
+		_errors.append("Beta feature tag remains in production exports")
+	for excluded_path in ["addons/*", "tests/*", "docs/*", "tools/*", "levels/dev/*"]:
+		if export_text.count(excluded_path) != 5:
+			_errors.append("Every export must exclude %s" % excluded_path)
+	if export_text.count('com.hullbreach.game') != 3:
+		_errors.append("Mobile and macOS application identifiers are inconsistent")

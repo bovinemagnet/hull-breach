@@ -37,6 +37,12 @@ This register records deliberate constraints discovered while reviewing the Phas
 - **Priority:** High
 - **Resolution:** Record results in `docs/development/beta-hardening.md` before Phase 6 release-candidate approval.
 
+## TD-007 — External Release Candidate approvals are outstanding
+
+- **Status:** Open release blocker for affected platforms.
+- **Context:** Signing/notarization, store submissions, content ratings, final screenshots/trailer, clean-device campaigns, and the Windows/macOS/mobile/Steam Deck evidence matrix require credentials, accounts, hardware, or business decisions unavailable to repository automation.
+- **Resolution:** Complete `docs/release/release_checklist.md` and `docs/release/platform_matrix.md` against one immutable candidate before advertising or tagging production.
+
 ## TD-005 — Runtime level tiles are prototype authoring data
 
 - **Description:** Current missions populate TileMapLayers from code-authored prototype tiles.

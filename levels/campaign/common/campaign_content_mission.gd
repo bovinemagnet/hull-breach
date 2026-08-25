@@ -313,6 +313,8 @@ func _restore_checkpoint(state: CheckpointState) -> void:
 
 
 func debug_complete() -> void:
+	if not OS.is_debug_build():
+		return
 	while not mission.is_complete:
 		var objective := mission.get_active_objective()
 		if objective == null:
