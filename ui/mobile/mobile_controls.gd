@@ -40,6 +40,8 @@ func bind_player(p_player: Player) -> void:
 
 
 func toggle_debug_visibility() -> void:
+	if not OS.is_debug_build():
+		return
 	root.visible = not root.visible
 
 

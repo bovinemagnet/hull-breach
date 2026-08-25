@@ -1,5 +1,5 @@
-name: Beta bug report
-description: Report a reproducible Hull Breach Beta defect
+name: Release Candidate bug report
+description: Report a reproducible Hull Breach release defect
 title: "[P2] "
 labels: [bug]
 body:
@@ -19,7 +19,7 @@ body:
     id: build
     attributes:
       label: Build version
-      placeholder: 0.8.0 Beta (build ID from menu or pause screen)
+      placeholder: 1.0.0-rc.1 (commit from menu, pause screen, or log)
     validations:
       required: true
   - type: input

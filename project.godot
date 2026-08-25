@@ -6,7 +6,8 @@ config_version=5
 [application]
 
 config/name="Hull Breach"
-config/version="0.8.0"
+config/version="1.0.0-rc.1"
+config/icon="res://assets/original/branding/hull_breach_icon_1024.png"
 run/main_scene="res://ui/menus/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 

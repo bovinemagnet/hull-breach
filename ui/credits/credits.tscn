@@ -57,7 +57,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-text = "HULL BREACH 0.8.0 BETA"
+text = "VERSION: 1.0.0-RC.1 | COMMIT: LOCAL | BUILD DATE: LOCAL | CHANNEL: RELEASE CANDIDATE"
 horizontal_alignment = 1
 
 [node name="CreditsText" type="Label" parent="Content"]
@@ -69,3 +69,8 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 text = "Return to Main Menu"
+
+[node name="LegalButton" type="Button" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Licences and Privacy"

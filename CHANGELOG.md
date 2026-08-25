@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 1.0.0-rc.1 - 2026-08-25
+
+### Added
+
+- Reproducible Release Candidate packaging with embedded version/commit/date/channel metadata, manifests, SHA-256 checksums, and standalone smoke verification.
+- Protected manual release workflow, authoritative ship checklist, platform/save matrices, store copy, signing policy, legal audit, known-issue policy, release notes, and launch/rollback runbook.
+- Original Hull Breach release icon and an in-game licences/privacy viewer containing the Godot MIT notice.
+
+### Changed
+
+- Production presets now use release-candidate feature tags, final application identity/version fields, stricter development-content exclusions, and frozen Godot 4.7.2 tooling.
+- Debug completion, visualization, and overlay paths are explicitly disabled outside debug builds.
+- Settings now expose the persisted fullscreen option needed for desktop release verification.
+
 ## 0.8.0 - 2026-08-25
 
 ### Added

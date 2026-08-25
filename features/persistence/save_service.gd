@@ -59,7 +59,10 @@ func save(data: Dictionary) -> bool:
 		return _fail("Unable to open temporary save file")
 	temporary.store_string(json_text)
 	temporary.flush()
+	var write_error := temporary.get_error()
 	temporary.close()
+	if write_error != OK:
+		return _fail("Unable to write save data; storage may be full or unavailable")
 	if _read_valid_document(temporary_path).is_empty():
 		return _fail("Temporary save verification failed")
 	if FileAccess.file_exists(save_path):

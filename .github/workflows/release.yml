@@ -1,0 +1,61 @@
+name: Release Candidate Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact version from project.godot
+        required: true
+        default: 1.0.0-rc.1
+      target:
+        description: Unsigned build target
+        required: true
+        type: choice
+        options:
+          - linux
+          - windows
+          - macos
+          - desktop
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-candidate-${{ inputs.version }}-${{ inputs.target }}
+  cancel-in-progress: false
+
+jobs:
+  build-test-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: release-candidate
+
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Install frozen Godot toolchain
+        uses: chickensoft-games/setup-godot@v2.4.1
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: true
+
+      - name: Run complete RC gate
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          HULL_BREACH_BUILD_ID: ${{ github.sha }}
+          HULL_BREACH_RELEASE_CHANNEL: Release Candidate
+        run: ./tools/release-gate.sh "${{ inputs.target }}"
+
+      - name: Upload reviewable artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: hull-breach-${{ inputs.version }}-${{ inputs.target }}-${{ github.sha }}
+          path: |
+            build/release/*
+            build/logs/*
+          if-no-files-found: error
+          retention-days: 30

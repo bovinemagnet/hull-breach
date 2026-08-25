@@ -128,10 +128,10 @@ func _build_accessibility_settings() -> void:
 	reset_button.name = "ResetSettingsButton"
 	reset_button.text = "Reset to Defaults"
 	reset_button.pressed.connect(_reset_settings)
-	$SettingsPanel/Grid.add_child(reset_button)
+	$SettingsPanel/Scroll/Grid.add_child(reset_button)
 	var spacer := Control.new()
-	$SettingsPanel/Grid.add_child(spacer)
-	$SettingsPanel/Grid.move_child(%SettingsBackButton, $SettingsPanel/Grid.get_child_count() - 1)
+	$SettingsPanel/Scroll/Grid.add_child(spacer)
+	$SettingsPanel/Scroll/Grid.move_child(%SettingsBackButton, $SettingsPanel/Scroll/Grid.get_child_count() - 1)
 
 
 func _build_safety_dialogs() -> void:
@@ -152,9 +152,9 @@ func _add_settings_slider(label_text: String, minimum: float, maximum: float) ->
 	slider.min_value = minimum
 	slider.max_value = maximum
 	slider.step = 0.05
-	$SettingsPanel/Grid.add_child(label)
-	$SettingsPanel/Grid.add_child(slider)
-	$SettingsPanel/Grid.move_child(%SettingsBackButton, $SettingsPanel/Grid.get_child_count() - 1)
+	$SettingsPanel/Scroll/Grid.add_child(label)
+	$SettingsPanel/Scroll/Grid.add_child(slider)
+	$SettingsPanel/Scroll/Grid.move_child(%SettingsBackButton, $SettingsPanel/Scroll/Grid.get_child_count() - 1)
 	return slider
 
 
@@ -165,6 +165,7 @@ func _populate_settings() -> void:
 	%AmbienceSlider.value = settings.ambience_volume
 	%SfxSlider.value = settings.sfx_volume
 	%VsyncCheck.button_pressed = settings.vsync_enabled
+	%FullscreenCheck.button_pressed = settings.fullscreen_enabled
 	%DeadzoneSlider.value = settings.controller_deadzone
 	%AimAssistSlider.value = settings.aim_assist_strength
 	%UiScaleSlider.value = settings.ui_scale
@@ -182,6 +183,7 @@ func _save_and_show_main() -> void:
 	settings.ambience_volume = %AmbienceSlider.value
 	settings.sfx_volume = %SfxSlider.value
 	settings.vsync_enabled = %VsyncCheck.button_pressed
+	settings.fullscreen_enabled = %FullscreenCheck.button_pressed
 	settings.controller_deadzone = %DeadzoneSlider.value
 	settings.aim_assist_strength = %AimAssistSlider.value
 	settings.ui_scale = %UiScaleSlider.value
@@ -190,7 +192,11 @@ func _save_and_show_main() -> void:
 	settings.screen_shake_intensity = screen_shake_slider.value
 	settings.flash_intensity = flash_intensity_slider.value
 	settings.vibration_intensity = vibration_slider.value
-	SettingsService.save_settings()
+	if not SettingsService.save_settings():
+		save_error_dialog.title = "Settings"
+		save_error_dialog.dialog_text = "SETTINGS COULD NOT BE SAVED\n\n%s" % SettingsService.last_error
+		save_error_dialog.popup_centered()
+		return
 	_show_main()
 
 

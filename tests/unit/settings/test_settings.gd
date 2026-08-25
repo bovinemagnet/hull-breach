@@ -42,3 +42,10 @@ func test_corrupted_settings_recover_from_backup() -> void:
 	assert_float(recovered.master_volume).is_equal_approx(0.2, 0.001)
 	assert_str(service.last_error).contains("backup")
 	service.clear()
+
+
+func test_unavailable_settings_directory_fails_gracefully() -> void:
+	var service := auto_free(SettingsServiceNode.new()) as SettingsServiceNode
+	service.configure_path("user://missing-release-test-directory/settings.json")
+	assert_bool(service.save_settings()).is_false()
+	assert_str(service.last_error).contains("temporary settings")

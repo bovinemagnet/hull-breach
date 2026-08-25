@@ -51,13 +51,16 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Build and smoke-test Linux Beta
-        run: ./tools/export-beta.sh
+      - name: Build and smoke-test Linux Release Candidate
+        run: ./tools/export-release.sh linux
 
-      - name: Upload Linux Beta package
+      - name: Upload Linux Release Candidate package
         uses: actions/upload-artifact@v7
         with:
-          name: hull-breach-0.8.0-linux-${{ github.sha }}
-          path: build/beta/hull-breach-0.8.0-linux-x86_64.tar.gz
+          name: hull-breach-1.0.0-rc.1-linux-${{ github.sha }}
+          path: |
+            build/release/hull-breach-1.0.0-rc.1-linux-x86_64.tar.gz
+            build/release/manifest-1.0.0-rc.1-linux.json
+            build/release/SHA256SUMS-1.0.0-rc.1-linux.txt
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
