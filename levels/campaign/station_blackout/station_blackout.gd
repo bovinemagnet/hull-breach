@@ -36,7 +36,6 @@ var world_flags: Dictionary = {
 	"power_restored": false,
 	"distress_transmitted": false,
 }
-var _debug_visible := false
 var _alarm_active := false
 var _alarm_timer := 0.0
 var _ambient_audio: AudioStreamPlayer
@@ -58,7 +57,7 @@ func _ready() -> void:
 	player.camera.limit_top = int(MAP_RECT.position.y)
 	player.camera.limit_right = int(MAP_RECT.end.x)
 	player.camera.limit_bottom = int(MAP_RECT.end.y)
-	player.weapon.noise_requested.connect(noise_system.emit_noise)
+	player.weapon_inventory.noise_requested.connect(noise_system.emit_noise)
 	player.died.connect(_on_player_died)
 	player.interaction_detector.prompt_changed.connect(mission_hud.set_prompt)
 	player.access_inventory.credential_added.connect(_on_credential_added)
@@ -68,6 +67,7 @@ func _ready() -> void:
 	power_grid.circuit_changed.connect(_on_power_changed)
 	combat_hud.bind_player(player)
 	mobile_controls.bind_player(player)
+	$DevelopmentDebugOverlay.bind(player, mission, power_grid, checkpoint_manager)
 	var objective := mission.get_active_objective()
 	if objective != null:
 		mission_hud.set_objective(objective.title, objective.details, mission.active_index + 1, mission.objectives.size())
@@ -75,6 +75,8 @@ func _ready() -> void:
 	var pending := checkpoint_manager.consume_pending()
 	if pending != null:
 		_restore_checkpoint(pending)
+	elif get_tree().current_scene == self and _session() != null and not _session().checkpoint_for(&"station_blackout").is_empty():
+		_restore_checkpoint(CheckpointState.from_dictionary(_session().checkpoint_for(&"station_blackout")))
 	else:
 		_save_checkpoint(&"mission_start")
 	queue_redraw()
@@ -116,21 +118,7 @@ func _build_tile_layers() -> void:
 
 
 func _create_runtime_tile_set(base_colour: Color, line_colour: Color) -> TileSet:
-	var image := Image.create(40, 40, false, Image.FORMAT_RGBA8)
-	image.fill(base_colour)
-	for pixel in 40:
-		image.set_pixel(pixel, 0, line_colour)
-		image.set_pixel(0, pixel, line_colour)
-	image.set_pixel(20, 20, line_colour)
-	image.set_pixel(21, 20, line_colour)
-	var atlas := TileSetAtlasSource.new()
-	atlas.texture = ImageTexture.create_from_image(image)
-	atlas.texture_region_size = Vector2i(40, 40)
-	atlas.create_tile(Vector2i.ZERO)
-	var tile_set := TileSet.new()
-	tile_set.tile_size = Vector2i(40, 40)
-	tile_set.add_source(atlas, 0)
-	return tile_set
+	return RuntimeLevelBuilder.create_tile_set(base_colour, line_colour)
 
 
 func _process(delta: float) -> void:
@@ -140,25 +128,16 @@ func _process(delta: float) -> void:
 			noise_system.emit_noise(NoiseEvent.new(Vector2(430.0, 180.0), 1100.0, &"alarm", self, 1.4))
 			_alarm_timer = 1.4
 	combat_hud.update_status(get_tree().get_nodes_in_group(&"enemies").size(), Engine.get_frames_per_second(), player.invulnerable)
-	if _debug_visible:
-		var objective := mission.get_active_objective()
-		mission_hud.set_debug(true, "STATE %s\nPOWER %s\nOBJECTIVE %s\nCHECKPOINT %s" % [
-			"ALARM" if _alarm_active else "NORMAL",
-			"MAIN" if power_grid.is_powered(&"main") else "EMERGENCY",
-			String(objective.id) if objective != null else "complete",
-			String(checkpoint_manager.current_state.checkpoint_id) if checkpoint_manager.current_state != null else "none",
-		])
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"pause"):
 		_set_paused(not get_tree().paused)
+	if not OS.is_debug_build():
+		return
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
 	match event.physical_keycode:
-		KEY_F1:
-			_debug_visible = not _debug_visible
-			mission_hud.set_debug(_debug_visible, "")
 		KEY_F2:
 			player.access_inventory.grant(&"engineering")
 		KEY_F3:
@@ -213,15 +192,7 @@ func _build_collision() -> void:
 
 
 func _add_wall(position: Vector2, size: Vector2) -> void:
-	var body := StaticBody2D.new()
-	body.position = position
-	body.collision_layer = 1
-	var shape := CollisionShape2D.new()
-	var rectangle := RectangleShape2D.new()
-	rectangle.size = size
-	shape.shape = rectangle
-	body.add_child(shape)
-	$World/StaticGeometry.add_child(body)
+	RuntimeLevelBuilder.add_wall($World/StaticGeometry, position, size)
 
 
 func _build_interactables() -> void:
@@ -351,7 +322,7 @@ func _connect_ui() -> void:
 	combat_hud.resume_requested.connect(func() -> void: _set_paused(false))
 	combat_hud.restart_requested.connect(_restart_checkpoint)
 	combat_hud.quit_requested.connect(_quit_to_bootstrap)
-	mission_hud.replay_requested.connect(_restart_mission)
+	mission_hud.replay_requested.connect(_continue_campaign)
 	mission_hud.quit_requested.connect(_quit_to_bootstrap)
 	mobile_controls.pause_requested.connect(func() -> void: _set_paused(not get_tree().paused))
 
@@ -402,8 +373,14 @@ func _on_objective_completed(_objective_id: StringName, title: String) -> void:
 
 func _on_mission_completed() -> void:
 	_alarm_active = false
+	_set_combat_music(false)
 	player.input_enabled = false
-	mission_hud.show_complete()
+	var result := MissionResult.new()
+	result.mission_id = &"station_blackout"
+	result.completed = true
+	if _session() != null:
+		_session().complete_mission(result)
+	mission_hud.show_complete("STATION BLACKOUT COMPLETE", "Distress signal transmitted. Medical Wing unlocked.", "Continue to Medical Wing")
 
 
 func _set_main_power(enabled: bool) -> void:
@@ -425,6 +402,7 @@ func _trigger_alarm() -> void:
 	if _alarm_active:
 		return
 	_alarm_active = true
+	_set_combat_music(true)
 	_alarm_timer = 0.0
 	extraction.set_active(true)
 	mission_hud.notify("DISTRESS SIGNAL SENT — ALARM ACTIVE — REACH EXTRACTION", 4.0)
@@ -439,6 +417,7 @@ func _save_checkpoint(checkpoint_id: StringName) -> void:
 	state.player_health = player.health_component.current_health
 	state.magazine_ammo = player.weapon.current_magazine
 	state.reserve_ammo = player.weapon.reserve_ammo
+	state.weapon_states = player.weapon_inventory.snapshot()
 	state.credentials = player.access_inventory.snapshot()
 	state.mission_state = mission.snapshot()
 	state.power_state = power_grid.snapshot()
@@ -448,6 +427,8 @@ func _save_checkpoint(checkpoint_id: StringName) -> void:
 		"shortcut": shortcut_door.is_open(),
 	}
 	checkpoint_manager.save(state)
+	if get_tree().current_scene == self and _session() != null:
+		_session().save_checkpoint(&"station_blackout", state.to_dictionary())
 
 
 func _restore_checkpoint(state: CheckpointState) -> void:
@@ -457,9 +438,12 @@ func _restore_checkpoint(state: CheckpointState) -> void:
 	var missing_health := player.health_component.maximum_health - state.player_health
 	if missing_health > 0.0:
 		player.health_component.apply_damage(DamageInfo.new(missing_health))
-	player.weapon.current_magazine = state.magazine_ammo
-	player.weapon.reserve_ammo = state.reserve_ammo
-	player.weapon.ammo_changed.emit(state.magazine_ammo, state.reserve_ammo)
+	if state.weapon_states.is_empty():
+		player.weapon.current_magazine = state.magazine_ammo
+		player.weapon.reserve_ammo = state.reserve_ammo
+		player.weapon.ammo_changed.emit(state.magazine_ammo, state.reserve_ammo)
+	else:
+		player.weapon_inventory.restore(state.weapon_states)
 	player.access_inventory.restore(state.credentials)
 	mission.restore(state.mission_state)
 	power_grid.restore(state.power_state)
@@ -494,10 +478,32 @@ func _restart_mission() -> void:
 	get_tree().reload_current_scene()
 
 
+func _continue_campaign() -> void:
+	get_tree().paused = false
+	CheckpointManager.clear_pending()
+	if _session() != null:
+		_session().transition_to_mission(&"medical_wing")
+	else:
+		get_tree().change_scene_to_file("res://levels/campaign/medical_wing/medical_wing.tscn")
+
+
 func _quit_to_bootstrap() -> void:
 	get_tree().paused = false
 	CheckpointManager.clear_pending()
-	get_tree().change_scene_to_file("res://levels/dev/bootstrap.tscn")
+	if _session() != null:
+		_session().transition_to_scene("res://ui/menus/main_menu.tscn")
+	else:
+		get_tree().change_scene_to_file("res://ui/menus/main_menu.tscn")
+
+
+func _session() -> GameSessionState:
+	return get_node_or_null("/root/GameSession") as GameSessionState
+
+
+func _set_combat_music(enabled: bool) -> void:
+	var director: Node = get_node_or_null("/root/MusicDirector")
+	if director != null:
+		director.call("set_combat", enabled)
 
 
 func _draw() -> void:

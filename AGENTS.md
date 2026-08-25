@@ -16,6 +16,7 @@ godot --headless --path . --import      # Validate imports and scene references
 ./tools/test.sh                         # Run the GdUnit4 suite
 ./tools/profile-combat.sh               # Run the 50-Drone stress baseline
 ./tools/profile-station-blackout.sh     # Profile the 20-enemy vertical slice
+./tools/profile-phase3.sh               # Profile 50 mixed enemies and 100 projectiles
 ./tools/export-debug.sh                 # Produce a debug export
 ```
 

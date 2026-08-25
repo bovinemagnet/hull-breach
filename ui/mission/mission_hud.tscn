@@ -111,13 +111,15 @@ grow_vertical = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="Title" type="Label" parent="CompleteOverlay/VBox"]
+[node name="CompleteTitle" type="Label" parent="CompleteOverlay/VBox"]
+unique_name_in_owner = true
 theme_override_colors/font_color = Color(0.35, 1, 0.72, 1)
 theme_override_font_sizes/font_size = 32
 text = "MISSION COMPLETE"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="CompleteOverlay/VBox"]
+[node name="CompleteSubtitle" type="Label" parent="CompleteOverlay/VBox"]
+unique_name_in_owner = true
 text = "Distress signal transmitted. Extraction successful."
 horizontal_alignment = 1
 

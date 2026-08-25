@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/missions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"medical_wing"
+display_name = "Medical Wing"
+description = "Recover the containment archive and escape the compromised wards."
+objective_ids = PackedStringArray("reach_triage", "medical_access", "enter_wards", "clear_hazard", "reach_archive", "recover_data", "extract")
+objective_titles = PackedStringArray("Reach Triage", "Find Medical Access", "Enter the Wards", "Clear Quarantine", "Reach the Research Archive", "Recover Containment Data", "Reach Extraction")
+objective_details = PackedStringArray("Follow the emergency triage markings.", "Search the abandoned staff station.", "Use the credential at the quarantine bulkhead.", "Disable the live conduit and restore ventilation.", "Cross the wards to the research block.", "Download the containment archive.", "Return to the emergency shuttle bay.")
+objective_events = PackedStringArray("triage_reached", "medical_access_collected", "wards_entered", "hazard_cleared", "archive_reached", "data_recovered", "extraction_reached")
+objective_kinds = PackedInt32Array(0, 2, 0, 1, 0, 1, 3)

@@ -1,6 +1,6 @@
 # Hull Breach
 
-Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. It is built with Godot and includes the complete Station Blackout vertical slice: exploration, powered doors, noise-reactive enemies, objectives, checkpoints, and extraction.
+Hull Breach is a top-down science-fiction survival shooter inspired by classic Amiga games. Version 0.3.0 includes the Station Blackout and Medical Wing campaign missions, three enemy archetypes, three weapons, hazards, difficulty profiles, and persistent campaign progress.
 
 ## Development Requirements
 
@@ -20,7 +20,7 @@ cd hull-breach
 godot --editor --path .
 ```
 
-Press F6 or F5 to run `levels/campaign/station_blackout/station_blackout.tscn`, the default project scene. See [Station Blackout instructions](docs/development/station-blackout.md) for the mission flow and controls. The Phase 1 sandbox remains available at `levels/dev/combat_sandbox/combat_sandbox.tscn`.
+Press F6 or F5 to open the main menu, then start or continue the campaign. `levels/campaign/station_blackout/` and `levels/campaign/medical_wing/` can also be run directly for development. The combat sandbox remains available at `levels/dev/combat_sandbox/combat_sandbox.tscn`.
 
 ## Running Tests and Validation
 
@@ -28,9 +28,10 @@ Press F6 or F5 to run `levels/campaign/station_blackout/station_blackout.tscn`, 
 ./tools/validate.sh
 ./tools/test.sh
 ./tools/profile-combat.sh
+./tools/profile-phase3.sh
 ```
 
-Validation performs a clean headless import. Tests use the vendored GdUnit4 v6.2.0 addon. The profile command runs a repeatable 50-Drone stress scene. See [testing instructions](docs/development/testing.md) for editor and command-line options.
+Validation performs a clean import plus content-ID, definition, mission-scene, and version checks. Tests use GdUnit4 v6.2.0. The Phase 3 profile exercises 50 mixed enemies and 100 projectiles. See [testing instructions](docs/development/testing.md) for details.
 
 ## Creating a Debug Build
 

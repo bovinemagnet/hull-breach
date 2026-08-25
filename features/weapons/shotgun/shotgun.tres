@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/weapons/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"shotgun"
+display_name = "SG-8 Breach Gun"
+damage = 12.0
+rounds_per_second = 1.15
+magazine_size = 6
+reserve_ammo = 30
+reload_duration = 2.2
+projectile_speed = 620.0
+projectile_lifetime = 0.62
+spread_degrees = 11.0
+projectiles_per_shot = 8
+automatic = false
+noise_radius = 720.0
+fire_mode = 0
+ammo_type = &"shells"
+preferred_slot = 2
+recoil = 3.0

@@ -10,8 +10,9 @@ enum State { IDLE, INVESTIGATE, SEARCH, CHASE, ATTACK, DEAD }
 
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
-@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
-@onready var noise_listener: NoiseListener = $NoiseListener
+@onready var navigation_agent: EnemyNavigationComponent = $NavigationAgent2D
+@onready var noise_listener: EnemyPerceptionComponent = $Perception
+@onready var melee_attack: MeleeAttack = $MeleeAttack
 
 var target: Node2D
 var state := State.IDLE
@@ -28,17 +29,23 @@ var _navigation_update_remaining := 0.0
 var _hit_audio: AudioStreamPlayer2D
 var _attack_audio: AudioStreamPlayer2D
 var _death_audio: AudioStreamPlayer2D
+var _health_multiplier := 1.0
+var _damage_multiplier := 1.0
+var _speed_multiplier := 1.0
+var _hearing_multiplier := 1.0
 
 
 func _ready() -> void:
 	add_to_group(&"enemies")
 	assert(definition != null and definition.is_valid(), "EnemyDefinition is invalid")
-	health_component.maximum_health = definition.maximum_health
+	_apply_difficulty()
+	health_component.maximum_health = definition.maximum_health * _health_multiplier
 	health_component.reset()
 	health_component.damage_received.connect(_on_damage_received)
 	health_component.died.connect(_on_died)
 	_attack_timer = AttackTimer.new(definition.attack_cooldown)
-	noise_listener.hearing_sensitivity = definition.hearing_sensitivity
+	noise_listener.hearing_sensitivity = definition.hearing_sensitivity * _hearing_multiplier
+	noise_listener.configure(self, target, definition.vision_range, definition.hearing_sensitivity * _hearing_multiplier)
 	noise_listener.noise_heard.connect(_on_noise_heard)
 	navigation_agent.velocity_computed.connect(_on_navigation_velocity_computed)
 	_build_audio()
@@ -47,6 +54,8 @@ func _ready() -> void:
 
 func set_target(p_target: Node2D) -> void:
 	target = p_target
+	if is_node_ready():
+		noise_listener.target = p_target
 
 
 func hear_noise(event: NoiseEvent) -> void:
@@ -54,19 +63,13 @@ func hear_noise(event: NoiseEvent) -> void:
 
 
 func can_see_target() -> bool:
-	if not is_instance_valid(target):
-		return false
-	if global_position.distance_to(target.global_position) > definition.vision_range:
-		return false
-	var query := PhysicsRayQueryParameters2D.create(global_position, target.global_position, 1)
-	query.exclude = [get_rid()]
-	return get_world_2d().direct_space_state.intersect_ray(query).is_empty()
+	return noise_listener.can_see_target()
 
 
 func receive_damage(info: DamageInfo) -> void:
 	if state == State.DEAD:
 		return
-	_knockback += info.direction * 72.0
+	_knockback += info.direction * 72.0 * (1.0 - definition.knockback_resistance)
 	health_component.apply_damage(info)
 
 
@@ -124,10 +127,10 @@ func _physics_process(delta: float) -> void:
 	else:
 		state = State.CHASE
 		if perception_enabled:
-			_move_to(target.global_position, delta)
+			_move_to(_chase_destination(to_target, distance), delta)
 		else:
 			var chase_direction := _avoidance_direction if _avoidance_remaining > 0.0 else to_target.normalized()
-			velocity = chase_direction * definition.move_speed + _knockback
+			velocity = chase_direction * definition.move_speed * _speed_multiplier + _knockback
 
 	move_and_slide()
 	if state == State.CHASE and get_slide_collision_count() > 0:
@@ -138,16 +141,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _move_to(destination: Vector2, delta: float) -> void:
-	_navigation_update_remaining -= delta
-	if _navigation_update_remaining <= 0.0:
-		navigation_agent.target_position = destination
-		_navigation_update_remaining = 0.15
-	var direction := global_position.direction_to(destination)
-	if not navigation_agent.is_navigation_finished():
-		var next_position := navigation_agent.get_next_path_position()
-		if global_position.distance_squared_to(next_position) > 1.0:
-			direction = global_position.direction_to(next_position)
-	var desired_velocity := direction * definition.move_speed
+	var direction := navigation_agent.direction_to_destination(global_position, destination, delta)
+	var desired_velocity := direction * definition.move_speed * _speed_multiplier
 	if navigation_agent.avoidance_enabled:
 		navigation_agent.velocity = desired_velocity
 	else:
@@ -184,15 +179,29 @@ func _begin_wall_avoidance(to_target: Vector2) -> void:
 
 
 func _apply_attack_if_in_range() -> void:
-	if not is_instance_valid(target):
-		return
-	if global_position.distance_to(target.global_position) > definition.attack_range + 7.0:
-		return
-	if target.has_method("receive_damage"):
-		var direction := global_position.direction_to(target.global_position)
-		target.call("receive_damage", DamageInfo.new(definition.attack_damage, self, target.global_position, direction))
+	if melee_attack.apply(self, target, definition.attack_damage * _damage_multiplier, definition.attack_range + 7.0):
 		if _attack_audio != null:
 			_attack_audio.play()
+
+
+func _chase_destination(to_target: Vector2, distance: float) -> Vector2:
+	if definition.preferred_minimum_range > 0.0 and distance < definition.preferred_minimum_range:
+		return global_position - to_target.normalized() * definition.preferred_minimum_range
+	return target.global_position
+
+
+func _apply_difficulty() -> void:
+	var session: Node = get_node_or_null("/root/GameSession")
+	if session == null:
+		return
+	var profile_variant: Variant = session.get("difficulty")
+	if not profile_variant is DifficultyDefinition:
+		return
+	var profile := profile_variant as DifficultyDefinition
+	_health_multiplier = profile.enemy_health_multiplier
+	_damage_multiplier = profile.enemy_damage_multiplier
+	_speed_multiplier = profile.enemy_speed_multiplier
+	_hearing_multiplier = profile.hearing_multiplier
 
 
 func _on_damage_received(_amount: float) -> void:
@@ -246,7 +255,7 @@ func _exit_tree() -> void:
 
 func _draw() -> void:
 	var scale_factor := 1.0 - (_death_progress * 0.7)
-	var body_colour := Color(1.0, 0.92, 0.72) if _hit_flash_remaining > 0.0 else Color(0.75, 0.18, 0.24)
+	var body_colour := Color(1.0, 0.92, 0.72) if _hit_flash_remaining > 0.0 else definition.body_colour
 	if _windup_remaining > 0.0:
 		body_colour = Color(1.0, 0.55, 0.2)
 	elif state == State.INVESTIGATE:

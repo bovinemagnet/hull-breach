@@ -3,6 +3,8 @@ extends Resource
 
 @export var id: StringName = &"enemy"
 @export var display_name: String = "Enemy"
+@export var combat_role: StringName = &"melee"
+@export var body_colour := Color(0.75, 0.18, 0.24)
 @export_range(0.0, 10000.0, 0.1) var maximum_health: float = 50.0
 @export_range(0.0, 1000.0, 1.0) var move_speed: float = 90.0
 @export_range(0.0, 1000.0, 0.1) var attack_damage: float = 10.0
@@ -13,6 +15,12 @@ extends Resource
 @export_range(0.0, 5000.0, 1.0) var vision_range: float = 360.0
 @export_range(0.0, 30.0, 0.1) var search_duration: float = 3.0
 @export_range(0.0, 5.0, 0.05) var hearing_sensitivity: float = 1.0
+@export_range(0.0, 2000.0, 1.0) var acceleration: float = 540.0
+@export_range(0.0, 5000.0, 1.0) var preferred_minimum_range: float = 0.0
+@export_range(0.0, 5000.0, 1.0) var preferred_maximum_range: float = 0.0
+@export_range(0.0, 5000.0, 1.0) var projectile_speed: float = 360.0
+@export_range(0.0, 10.0, 0.05) var projectile_lifetime: float = 2.0
+@export_range(0.0, 1.0, 0.05) var knockback_resistance: float = 0.0
 
 
 func validation_errors() -> PackedStringArray:
@@ -29,6 +37,10 @@ func validation_errors() -> PackedStringArray:
 		errors.append("attack_cooldown cannot be negative")
 	if detection_range <= 0.0:
 		errors.append("detection_range must be greater than zero")
+	if id.is_empty() or display_name.is_empty():
+		errors.append("id and display_name must not be empty")
+	if preferred_maximum_range > 0.0 and preferred_minimum_range > preferred_maximum_range:
+		errors.append("preferred range is invalid")
 	return errors
 
 

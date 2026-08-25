@@ -8,6 +8,7 @@ signal quit_requested
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
 @onready var ammo_label: Label = %AmmoLabel
+@onready var ammo_title: Label = %AmmoTitle
 @onready var reload_label: Label = %ReloadLabel
 @onready var status_label: Label = %StatusLabel
 @onready var pause_overlay: Control = %PauseOverlay
@@ -32,13 +33,27 @@ func _ready() -> void:
 
 
 func bind_player(player: Player) -> void:
-	_weapon = player.weapon
 	player.health_component.health_changed.connect(_on_health_changed)
-	player.weapon.ammo_changed.connect(_on_ammo_changed)
-	player.weapon.reload_started.connect(_on_reload_started)
-	player.weapon.reload_finished.connect(_on_reload_finished)
+	player.weapon_changed.connect(_on_weapon_changed)
+	_on_weapon_changed(player.weapon, player.weapon_inventory.current_slot)
 	_on_health_changed(player.health_component.current_health, player.health_component.maximum_health)
-	_on_ammo_changed(player.weapon.current_magazine, player.weapon.reserve_ammo)
+
+
+func _on_weapon_changed(weapon: Weapon, slot: int) -> void:
+	if _weapon != null:
+		if _weapon.ammo_changed.is_connected(_on_ammo_changed):
+			_weapon.ammo_changed.disconnect(_on_ammo_changed)
+		if _weapon.reload_started.is_connected(_on_reload_started):
+			_weapon.reload_started.disconnect(_on_reload_started)
+		if _weapon.reload_finished.is_connected(_on_reload_finished):
+			_weapon.reload_finished.disconnect(_on_reload_finished)
+	_weapon = weapon
+	_weapon.ammo_changed.connect(_on_ammo_changed)
+	_weapon.reload_started.connect(_on_reload_started)
+	_weapon.reload_finished.connect(_on_reload_finished)
+	ammo_title.text = "%d  %s" % [slot + 1, _weapon.definition.display_name.to_upper()]
+	reload_label.hide()
+	_on_ammo_changed(_weapon.current_magazine, _weapon.reserve_ammo)
 
 
 func show_pause(visible: bool) -> void:

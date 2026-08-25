@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://levels/campaign/station_blackout/station_blackout.gd" id="1"]
 [ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://ui/hud/combat_hud.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://ui/mission/mission_hud.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://ui/mobile/mobile_controls.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://ui/debug/development_debug_overlay.tscn" id="12"]
 
 [sub_resource type="CircleShape2D" id="ExtractionShape"]
 radius = 48.0
@@ -93,3 +94,5 @@ script = ExtResource("7")
 [node name="MissionHud" parent="." instance=ExtResource("10")]
 
 [node name="MobileControls" parent="." instance=ExtResource("11")]
+
+[node name="DevelopmentDebugOverlay" parent="." instance=ExtResource("12")]

@@ -17,3 +17,7 @@ spread_degrees = 2.0
 projectiles_per_shot = 1
 automatic = true
 noise_radius = 340.0
+fire_mode = 1
+ammo_type = &"energy"
+preferred_slot = 1
+recoil = 1.2

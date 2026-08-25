@@ -6,9 +6,16 @@ config_version=5
 [application]
 
 config/name="Hull Breach"
-config/version="0.2.0"
-run/main_scene="res://levels/campaign/station_blackout/station_blackout.tscn"
+config/version="0.3.0"
+run/main_scene="res://ui/menus/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[autoload]
+
+SaveService="*res://features/persistence/save_service.gd"
+SettingsService="*res://features/settings/settings_service.gd"
+GameSession="*res://features/session/game_session.gd"
+MusicDirector="*res://features/audio/music_director.gd"
 
 [display]
 
@@ -85,6 +92,18 @@ weapon_next={
 weapon_previous={
 "deadzone": 0.5,
 "events": [Object(InputEventMouseButton,"button_index":4), Object(InputEventJoypadButton,"button_index":9)]
+}
+weapon_1={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":49)]
+}
+weapon_2={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":50)]
+}
+weapon_3={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":51)]
 }
 pause={
 "deadzone": 0.5,

@@ -1,6 +1,8 @@
 class_name WeaponDefinition
 extends Resource
 
+enum FireMode { SEMI_AUTOMATIC, AUTOMATIC }
+
 @export var id: StringName = &"weapon"
 @export var display_name: String = "Weapon"
 @export_range(0.0, 10000.0, 0.1) var damage: float = 10.0
@@ -14,6 +16,10 @@ extends Resource
 @export_range(0, 32, 1) var projectiles_per_shot: int = 1
 @export var automatic: bool = true
 @export_range(0.0, 5000.0, 1.0) var noise_radius: float = 320.0
+@export var fire_mode := FireMode.AUTOMATIC
+@export var ammo_type: StringName = &"energy"
+@export_range(0, 2, 1) var preferred_slot := 1
+@export_range(0.0, 40.0, 0.1) var recoil := 1.0
 
 
 func validation_errors() -> PackedStringArray:
@@ -41,3 +47,7 @@ func validation_errors() -> PackedStringArray:
 
 func is_valid() -> bool:
 	return validation_errors().is_empty()
+
+
+func is_automatic() -> bool:
+	return fire_mode == FireMode.AUTOMATIC and automatic

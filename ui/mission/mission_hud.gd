@@ -58,6 +58,9 @@ func set_debug(visible: bool, text: String) -> void:
 	debug_label.text = text
 
 
-func show_complete() -> void:
+func show_complete(title := "MISSION COMPLETE", subtitle := "Objective secured. Extraction successful.", action := "Continue") -> void:
+	%CompleteTitle.text = title
+	%CompleteSubtitle.text = subtitle
+	%ReplayButton.text = action
 	complete_overlay.show()
 	%ReplayButton.grab_focus()

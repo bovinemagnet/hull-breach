@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/hazards/gas/gas_hazard.gd" id="1"]
+[ext_resource type="Script" path="res://features/hazards/hazard_definition.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = &"toxic_gas"
+display_name = "Contaminated Ward"
+damage = 6.0
+damage_interval = 0.8
+power_circuit = &"ventilation"
+enabled_when_powered = false
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(210, 120)
+
+[node name="GasHazard" type="Area2D"]
+script = ExtResource("1")
+definition = SubResource("1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("2")

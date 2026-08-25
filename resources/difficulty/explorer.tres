@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="DifficultyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/difficulty/difficulty_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"explorer"
+display_name = "Explorer"
+description = "More resources and forgiving enemy pressure."
+enemy_health_multiplier = 0.9
+enemy_damage_multiplier = 0.7
+enemy_speed_multiplier = 0.92
+hearing_multiplier = 0.85
+ammo_quantity_multiplier = 1.4
+health_pickup_multiplier = 1.3
+aim_assist_strength = 0.35

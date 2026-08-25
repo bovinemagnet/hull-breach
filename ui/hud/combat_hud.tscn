@@ -104,9 +104,10 @@ text = "RELOADING"
 vertical_alignment = 1
 
 [node name="AmmoTitle" type="Label" parent="Hud/BottomPanel/Margin/HBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.42, 0.9, 0.8, 1)
-text = "HB-4"
+text = "2  HB-4 PULSE RIFLE"
 vertical_alignment = 1
 
 [node name="AmmoLabel" type="Label" parent="Hud/BottomPanel/Margin/HBox"]

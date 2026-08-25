@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DifficultyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/difficulty/difficulty_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"survivor"
+display_name = "Survivor"
+description = "Scarce resources and enemies that punish noisy decisions."
+enemy_health_multiplier = 1.05
+enemy_damage_multiplier = 1.25
+enemy_speed_multiplier = 1.05
+hearing_multiplier = 1.15
+ammo_quantity_multiplier = 0.75
+health_pickup_multiplier = 0.75
