@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- The flashlight cone texture now emits from its left edge and is shifted into place with the light's texture offset, halving the light quad's texels and removing the permanently transparent half that trailed behind the player.
+
 ## 1.0.0-rc.1 - 2026-08-25
 
 ### Added
